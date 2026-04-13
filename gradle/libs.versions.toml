@@ -1,7 +1,9 @@
 [versions]
+agp = "9.1.0"
 kotlin = "2.3.10"
 
 [libraries]
+agp = { module = "com.android.tools.build:gradle", version.ref = "agp" }
 ktfmt = "com.facebook:ktfmt:0.62"
 
 [plugins]
