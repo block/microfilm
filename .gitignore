@@ -1,0 +1,13 @@
+# IntelliJ IDEA
+.idea/*
+!.idea/copyright
+
+# Gradle
+.gradle
+build
+
+# Android
+local.properties
+
+# Kotlin
+.kotlin

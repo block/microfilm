@@ -1,0 +1,9 @@
+[versions]
+kotlin = "2.3.10"
+
+[libraries]
+ktfmt = "com.facebook:ktfmt:0.62"
+
+[plugins]
+kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+spotless = { id = "com.diffplug.spotless", version = "8.4.0" }
