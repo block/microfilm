@@ -1,5 +1,6 @@
 [versions]
 agp = "9.1.0"
+cwebp = "1.6.0"
 kotlin = "2.3.10"
 
 [libraries]
