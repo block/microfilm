@@ -19,7 +19,7 @@ dependencyResolutionManagement {
 
 rootProject.name = "microfilm"
 
-include(":plugin")
+include(":cwebp", ":plugin")
 
 includeBuild("build-logic") {
   dependencySubstitution {
