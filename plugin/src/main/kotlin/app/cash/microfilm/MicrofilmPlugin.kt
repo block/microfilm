@@ -46,6 +46,8 @@ class MicrofilmPlugin : Plugin<Project> {
         tasks.register("compressMicrofilm$nameCapitalized", CompressTask::class.java) { task ->
           task.description = "Compresses source images for the '$name' source set"
           task.group = "microfilm"
+          task.microfilmDirectory.set(layout.projectDirectory.dir("src/$name/microfilm"))
+          task.resourcesDirectory.set(layout.projectDirectory.dir("src/$name/res"))
         }
       val verifySourceSet =
         tasks.register("verifyMicrofilm$nameCapitalized", VerifyTask::class.java) { task ->
