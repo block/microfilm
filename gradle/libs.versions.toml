@@ -5,8 +5,14 @@ kotlin = "2.3.10"
 
 [libraries]
 agp = { module = "com.android.tools.build:gradle", version.ref = "agp" }
+androidActivityCompose = "androidx.activity:activity-compose:1.13.0"
+composeMaterial = "androidx.compose.material:material:1.10.6"
+composeUi = "androidx.compose.ui:ui:1.10.6"
 ktfmt = "com.facebook:ktfmt:0.62"
 
 [plugins]
+androidApplication = { id = "com.android.application", version.ref = "agp" }
+androidLibrary = { id = "com.android.library", version.ref = "agp" }
+kotlinCompose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 spotless = { id = "com.diffplug.spotless", version = "8.4.0" }
