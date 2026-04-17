@@ -1,5 +1,7 @@
 import java.net.URI
 import java.security.MessageDigest
+import javax.inject.Inject
+import org.gradle.process.ExecOperations
 
 plugins {
   base
@@ -92,6 +94,11 @@ fun TaskContainer.registerDownloadTask(platform: CwebpPlatform): TaskProvider<Ta
     }
   }
 
+// ExecOperations must be injected via Gradle's service injection in Gradle 9+
+abstract class Exec @Inject constructor(val ops: ExecOperations)
+
+val exec = objects.newInstance<Exec>()
+
 fun TaskContainer.registerExtractTask(
   platform: CwebpPlatform,
   download: TaskProvider<Task>,
@@ -111,8 +118,8 @@ fun TaskContainer.registerExtractTask(
       // Extract the binary from the archive
       val archiveFile = archive.get()
       val binaryFile = binary.get().asFile.apply { parentFile.mkdirs() }
-      val process =
-        ProcessBuilder(
+      exec.ops.exec {
+        commandLine(
           "tar",
           "xzf",
           archiveFile.absolutePath,
@@ -122,14 +129,6 @@ fun TaskContainer.registerExtractTask(
           platform.binaryPath.count { it == '/' }.toString(),
           platform.binaryPath,
         )
-          .redirectErrorStream(true)
-          .start()
-
-      // Verify that the extraction succeeded
-      val processOutput = process.inputStream.bufferedReader().readText()
-      val exitCode = process.waitFor()
-      require(exitCode == 0) {
-        "tar extraction failed for ${platform.classifier}: $processOutput"
       }
 
       // Set the binary as executable
