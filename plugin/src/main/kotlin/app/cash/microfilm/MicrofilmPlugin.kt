@@ -5,6 +5,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.type.ArtifactTypeDefinition.ARTIFACT_TYPE_ATTRIBUTE
 import org.gradle.api.artifacts.type.ArtifactTypeDefinition.JAR_TYPE
+import org.gradle.api.file.FileCollection
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.nativeplatform.MachineArchitecture
 import org.gradle.nativeplatform.MachineArchitecture.ARCHITECTURE_ATTRIBUTE
@@ -69,17 +70,32 @@ class MicrofilmPlugin : Plugin<Project> {
 
     // Configure the tasks to run for each source set
     plugins.withId("com.android.application") {
-      configureSourceSets(compress = compress, verify = verify)
+      configureSourceSets(
+        extension = extension,
+        cwebpDirectory = cwebpDirectory,
+        compress = compress,
+        verify = verify,
+      )
     }
     plugins.withId("com.android.library") {
-      configureSourceSets(compress = compress, verify = verify)
+      configureSourceSets(
+        extension = extension,
+        cwebpDirectory = cwebpDirectory,
+        compress = compress,
+        verify = verify,
+      )
     }
 
     // Link the verify task to the common check task
     plugins.withId("base") { tasks.named("check").configure { it.dependsOn(verify) } }
   }
 
-  private fun Project.configureSourceSets(compress: TaskProvider<*>, verify: TaskProvider<*>) {
+  private fun Project.configureSourceSets(
+    extension: MicrofilmExtension,
+    cwebpDirectory: FileCollection,
+    compress: TaskProvider<*>,
+    verify: TaskProvider<*>,
+  ) {
     extensions.getByType(CommonExtension::class.java).sourceSets.configureEach { sourceSet ->
       val name = sourceSet.name
       val nameCapitalized = name.replaceFirstChar { it.uppercase() }
@@ -89,8 +105,12 @@ class MicrofilmPlugin : Plugin<Project> {
         tasks.register("compressMicrofilm$nameCapitalized", CompressTask::class.java) { task ->
           task.description = "Compresses source images for the '$name' source set"
           task.group = "microfilm"
+          task.cwebpDirectory.from(cwebpDirectory)
           task.microfilmDirectory.set(layout.projectDirectory.dir("src/$name/microfilm"))
           task.resourcesDirectory.set(layout.projectDirectory.dir("src/$name/res"))
+          task.lossless.set(extension.lossless)
+          task.quality.set(extension.quality)
+          task.outputs.upToDateWhen { false }
         }
       val verifySourceSet =
         tasks.register("verifyMicrofilm$nameCapitalized", VerifyTask::class.java) { task ->
