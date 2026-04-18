@@ -1,6 +1,7 @@
 plugins {
   `java-gradle-plugin`
   alias(libs.plugins.kotlinJvm)
+  alias(libs.plugins.kotlinSerialization)
   alias(libs.plugins.testkit)
   alias(libs.plugins.buildconfig)
 }
@@ -28,6 +29,8 @@ tasks.withType<Test>().configureEach {
 
 dependencies {
   compileOnly(libs.agp)
+
+  implementation(libs.kotlinx.serialization.json)
 
   functionalTestImplementation(platform(libs.junit.bom))
   functionalTestImplementation(libs.junit.jupiter)
