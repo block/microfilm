@@ -49,7 +49,7 @@ enum class CwebpPlatform(
     architecture = X86_64,
     archivePlatform = "linux-x86-64",
     sha256 = "1c5ffab71efecefa0e3c23516c3a3a1dccb45cc310ae1095c6f14ae268e38067",
-  )
+  ),
 }
 
 val CwebpPlatform.archiveName
@@ -88,9 +88,7 @@ fun TaskContainer.registerDownloadTask(platform: CwebpPlatform): TaskProvider<Ta
       val url = URI(platform.downloadUrl).toURL()
       logger.lifecycle("Downloading ${platform.archiveName}...")
       url.openStream().use { inputStream ->
-        archiveFile.outputStream().use { outputStream ->
-          inputStream.copyTo(outputStream)
-        }
+        archiveFile.outputStream().use { outputStream -> inputStream.copyTo(outputStream) }
       }
 
       // Verify the archive file SHA
@@ -103,7 +101,8 @@ fun TaskContainer.registerDownloadTask(platform: CwebpPlatform): TaskProvider<Ta
           |  expected: ${platform.sha256}
           |  actual:   $sha256
           |The download may be corrupt or tampered with.
-          """.trimMargin()
+          """
+            .trimMargin()
         )
       }
     }
@@ -165,48 +164,44 @@ fun TaskContainer.registerJarTask(
     archiveClassifier.set(platform.name)
   }
 
-val cwebpBinaryConfiguration = configurations.create("cwebpBinary") {
-  isCanBeConsumed = true
-  isCanBeResolved = false
+val cwebpBinaryConfiguration =
+  configurations.create("cwebpBinary") {
+    isCanBeConsumed = true
+    isCanBeResolved = false
 
-  attributes {
-    attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage.NATIVE_RUNTIME))
-  }
+    attributes { attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage.NATIVE_RUNTIME)) }
 
-  CwebpPlatform.entries.forEach { platform ->
-    val variant = outgoing.variants.create(platform.toString()) {
-      attributes {
-        attribute(
-          OPERATING_SYSTEM_ATTRIBUTE,
-          objects.named(OperatingSystemFamily::class.java, platform.osFamily),
-        )
-        attribute(
-          ARCHITECTURE_ATTRIBUTE,
-          objects.named(MachineArchitecture::class.java, platform.architecture),
-        )
-      }
+    CwebpPlatform.entries.forEach { platform ->
+      val variant =
+        outgoing.variants.create(platform.toString()) {
+          attributes {
+            attribute(
+              OPERATING_SYSTEM_ATTRIBUTE,
+              objects.named(OperatingSystemFamily::class.java, platform.osFamily),
+            )
+            attribute(
+              ARCHITECTURE_ATTRIBUTE,
+              objects.named(MachineArchitecture::class.java, platform.architecture),
+            )
+          }
+        }
+
+      val download = tasks.registerDownloadTask(platform = platform)
+      val extract = tasks.registerExtractTask(platform = platform, download = download)
+      val jar = tasks.registerJarTask(platform = platform, extract = extract)
+
+      variant.artifact(jar)
     }
-
-    val download = tasks.registerDownloadTask(platform = platform)
-    val extract = tasks.registerExtractTask(platform = platform, download = download)
-    val jar = tasks.registerJarTask(platform = platform, extract = extract)
-
-    variant.artifact(jar)
   }
-}
 
-val softwareComponentFactory = extensions.getByType(PublishingExtension::class).softwareComponentFactory
+val softwareComponentFactory =
+  extensions.getByType(PublishingExtension::class).softwareComponentFactory
 val cwebpComponent = softwareComponentFactory.adhoc("cwebpComponent")
+
 components.add(cwebpComponent)
 
-cwebpComponent.addVariantsFromConfiguration(cwebpBinaryConfiguration) {
-  mapToMavenScope("runtime")
-}
+cwebpComponent.addVariantsFromConfiguration(cwebpBinaryConfiguration) { mapToMavenScope("runtime") }
 
 publishing {
-  publications {
-    create<MavenPublication>("maven") {
-      from(components["cwebpComponent"])
-    }
-  }
+  publications { create<MavenPublication>("maven") { from(components["cwebpComponent"]) } }
 }

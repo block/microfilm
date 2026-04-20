@@ -38,9 +38,7 @@ dependencies {
 }
 
 buildConfig {
-  useKotlinOutput {
-    internalVisibility = true
-  }
+  useKotlinOutput { internalVisibility = true }
 
   packageName("app.cash.microfilm")
   buildConfigField("String", "microfilmVersion", "\"${project.version}\"")

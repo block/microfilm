@@ -15,7 +15,10 @@ configure<SpotlessExtension> {
     target("**/src/**/*.kt")
     ktfmt(libs.ktfmt.get().version).googleStyle()
   }
-  kotlinGradle { ktfmt(libs.ktfmt.get().version).googleStyle() }
+  kotlinGradle {
+    target("**/*.gradle.kts")
+    ktfmt(libs.ktfmt.get().version).googleStyle()
+  }
 }
 
 subprojects { version = extra["VERSION_NAME"]!! }

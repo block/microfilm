@@ -7,11 +7,7 @@ pluginManagement {
 
 @Suppress("UnstableApiUsage")
 dependencyResolutionManagement {
-  versionCatalogs {
-    create("libs") {
-      from(files("../gradle/libs.versions.toml"))
-    }
-  }
+  versionCatalogs { create("libs") { from(files("../gradle/libs.versions.toml")) } }
 
   repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
   repositories {
@@ -21,5 +17,7 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "build-logic"
+
 include(":plugin")
+
 project(":plugin").projectDir = File("../plugin")
