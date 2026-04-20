@@ -1,6 +1,14 @@
 import java.net.URI
 import java.security.MessageDigest
 import javax.inject.Inject
+import org.gradle.nativeplatform.MachineArchitecture
+import org.gradle.nativeplatform.MachineArchitecture.ARCHITECTURE_ATTRIBUTE
+import org.gradle.nativeplatform.MachineArchitecture.ARM64
+import org.gradle.nativeplatform.MachineArchitecture.X86_64
+import org.gradle.nativeplatform.OperatingSystemFamily
+import org.gradle.nativeplatform.OperatingSystemFamily.LINUX
+import org.gradle.nativeplatform.OperatingSystemFamily.MACOS
+import org.gradle.nativeplatform.OperatingSystemFamily.OPERATING_SYSTEM_ATTRIBUTE
 import org.gradle.process.ExecOperations
 
 plugins {
@@ -8,43 +16,45 @@ plugins {
 }
 
 enum class CwebpPlatform(
-  val classifier: String,
-  val platformName: String,
+  val osFamily: String,
+  val architecture: String,
+  val archivePlatform: String,
   val sha256: String,
 ) {
-  DarwinAarch64(
-    classifier = "darwin-aarch64",
-    platformName = "mac-arm64",
+  MacosArm64(
+    osFamily = MACOS,
+    architecture = ARM64,
+    archivePlatform = "mac-arm64",
     sha256 = "bc6bf84cc70f3f8574fba797d1e4a7dea4feebe9fa4be919f202413ea2b3b8f2",
   ),
-  DarwinX86_64(
-    classifier = "darwin-x86_64",
-    platformName = "mac-x86-64",
+  MacosX86_64(
+    osFamily = MACOS,
+    architecture = X86_64,
+    archivePlatform = "mac-x86-64",
     sha256 = "f112dd83b420ab2a4b27d46610d9827ddf4200216023281de378647ecca31c2a",
   ),
-  LinuxAarch64(
-    classifier = "linux-aarch64",
-    platformName = "linux-aarch64",
+  LinuxArm64(
+    osFamily = LINUX,
+    architecture = ARM64,
+    archivePlatform = "linux-aarch64",
     sha256 = "69f5eebe203e0f3942fe37986209a1725741be19c152950a4283b376c95ec798",
   ),
   LinuxX86_64(
-    classifier = "linux-x86_64",
-    platformName = "linux-x86-64",
+    osFamily = LINUX,
+    architecture = X86_64,
+    archivePlatform = "linux-x86-64",
     sha256 = "1c5ffab71efecefa0e3c23516c3a3a1dccb45cc310ae1095c6f14ae268e38067",
-  );
+  )
 }
 
 val CwebpPlatform.archiveName
-  get() = "libwebp-${libs.versions.cwebp.get()}-$platformName.tar.gz"
+  get() = "libwebp-${libs.versions.cwebp.get()}-$archivePlatform.tar.gz"
 
 val CwebpPlatform.binaryPath
-  get() = "libwebp-${libs.versions.cwebp.get()}-$platformName/bin/cwebp"
+  get() = "libwebp-${libs.versions.cwebp.get()}-$archivePlatform/bin/cwebp"
 
 val CwebpPlatform.downloadUrl
   get() = "https://storage.googleapis.com/downloads.webmproject.org/releases/webp/$archiveName"
-
-val CwebpPlatform.taskSuffix
-  get() = classifier.split("-").joinToString("") { it.replaceFirstChar(Char::uppercase) }
 
 fun File.sha256Hex(): String {
   val digest = MessageDigest.getInstance("SHA-256")
@@ -59,7 +69,7 @@ fun File.sha256Hex(): String {
 }
 
 fun TaskContainer.registerDownloadTask(platform: CwebpPlatform): TaskProvider<Task> =
-  register("download${platform.taskSuffix}") {
+  register("download$platform") {
     // Register the expected SHA as an input
     inputs.property("sha256", platform.sha256)
 
@@ -103,7 +113,7 @@ fun TaskContainer.registerExtractTask(
   platform: CwebpPlatform,
   download: TaskProvider<Task>,
 ): TaskProvider<Task> =
-  register("extract${platform.taskSuffix}") {
+  register("extract$platform") {
     dependsOn(download)
 
     // Register the archive file as an input
@@ -111,7 +121,7 @@ fun TaskContainer.registerExtractTask(
     inputs.file(archive)
 
     // Register the binary file as an output
-    val binary = layout.buildDirectory.file("binaries/${platform.classifier}/cwebp")
+    val binary = layout.buildDirectory.file("binaries/$platform/cwebp")
     outputs.file(binary)
 
     doLast {
@@ -140,20 +150,35 @@ fun TaskContainer.registerJarTask(
   platform: CwebpPlatform,
   extract: TaskProvider<Task>,
 ): TaskProvider<Jar> =
-  register<Jar>("jar${platform.taskSuffix}") {
+  register<Jar>("jar$platform") {
     dependsOn(extract)
 
     // Add the binary to the JAR
-    from(layout.buildDirectory.dir("binaries/${platform.classifier}"))
+    from(layout.buildDirectory.dir("binaries/$platform"))
 
     // Set the platform-specific classifier for the JAR
-    archiveClassifier.set(platform.classifier)
+    archiveClassifier.set(platform.name)
   }
 
 CwebpPlatform.entries.forEach { platform ->
   val download = tasks.registerDownloadTask(platform = platform)
   val extract = tasks.registerExtractTask(platform = platform, download = download)
   val jar = tasks.registerJarTask(platform = platform, extract = extract)
-  artifacts { add("default", jar) }
-}
 
+  // Create a configuration with OS and Architecture attributes for variant-aware resolution.
+  configurations.create("cwebpBinary$platform") {
+    isCanBeConsumed = true
+    isCanBeResolved = false
+    attributes {
+      attribute(
+        OPERATING_SYSTEM_ATTRIBUTE,
+        objects.named(OperatingSystemFamily::class.java, platform.osFamily),
+      )
+      attribute(
+        ARCHITECTURE_ATTRIBUTE,
+        objects.named(MachineArchitecture::class.java, platform.architecture),
+      )
+    }
+    outgoing.artifact(jar)
+  }
+}
