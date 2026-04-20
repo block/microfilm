@@ -1,0 +1,64 @@
+{
+  "entries": [
+    {
+      "sourcePath": "drawable-hdpi/cash_app_green.png",
+      "sourceSha256": "bf4efed5cf7bf4bd245c7a02c2a7a2753621040a729eb2d4eb4a4950fc56324e",
+      "compressedPath": "drawable-hdpi/cash_app_green.webp",
+      "compressedSha256": "c8493453b732d871601cfe03a8c1fc9d652817991e8e2aec8ca6a56df9dbde4d",
+      "compressor": {
+        "name": "cwebp",
+        "version": "1.6.0",
+        "lossless": true,
+        "quality": 90
+      }
+    },
+    {
+      "sourcePath": "drawable-mdpi/cash_app_green.png",
+      "sourceSha256": "8d5e4ae8fd037e399a244eff0cf9bf17a0580f692f36f067028208b137c68228",
+      "compressedPath": "drawable-mdpi/cash_app_green.webp",
+      "compressedSha256": "0d837f2f0e776cdb650ea2557327e983a272b831be6db4ce414959178ee452f6",
+      "compressor": {
+        "name": "cwebp",
+        "version": "1.6.0",
+        "lossless": true,
+        "quality": 90
+      }
+    },
+    {
+      "sourcePath": "drawable-xhdpi/cash_app_green.png",
+      "sourceSha256": "52e079d076369047b2f858d292555634abf5c8391043d6ca7aae4d45ea9597f6",
+      "compressedPath": "drawable-xhdpi/cash_app_green.webp",
+      "compressedSha256": "b06687ca5bfca7dcbce319f63006b9526d6ed30c14b4a6aec06380744b42887f",
+      "compressor": {
+        "name": "cwebp",
+        "version": "1.6.0",
+        "lossless": true,
+        "quality": 90
+      }
+    },
+    {
+      "sourcePath": "drawable-xxhdpi/cash_app_green.png",
+      "sourceSha256": "2dab093eb043f9a08b3f01e29bd59bb0a2a3a25ce4216eb309c2dc13634f14a3",
+      "compressedPath": "drawable-xxhdpi/cash_app_green.webp",
+      "compressedSha256": "852727640441b3a12ffe814e200988155e05d4f659216665956696c23ed7e071",
+      "compressor": {
+        "name": "cwebp",
+        "version": "1.6.0",
+        "lossless": true,
+        "quality": 90
+      }
+    },
+    {
+      "sourcePath": "drawable-xxxhdpi/cash_app_green.png",
+      "sourceSha256": "93d209b09cee5ffc346e8221fa41bcefeed0535b79e62c5a113daff01a3f7f05",
+      "compressedPath": "drawable-xxxhdpi/cash_app_green.webp",
+      "compressedSha256": "55caf237efef6107b5c7abc2e62bbbec8ec34fbedb87e5bf852407bae837ad69",
+      "compressor": {
+        "name": "cwebp",
+        "version": "1.6.0",
+        "lossless": true,
+        "quality": 90
+      }
+    }
+  ]
+}
