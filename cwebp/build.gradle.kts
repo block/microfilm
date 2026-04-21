@@ -13,7 +13,10 @@ import org.gradle.process.ExecOperations
 
 plugins {
   base
+  `maven-publish`
 }
+
+group = "app.cash.microfilm"
 
 enum class CwebpPlatform(
   val osFamily: String,
@@ -160,9 +163,13 @@ fun TaskContainer.registerJarTask(
     archiveClassifier.set(platform.name)
   }
 
-configurations.create("cwebpBinary") {
+val cwebpBinaryConfiguration = configurations.create("cwebpBinary") {
   isCanBeConsumed = true
   isCanBeResolved = false
+
+  attributes {
+    attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage.NATIVE_RUNTIME))
+  }
 
   CwebpPlatform.entries.forEach { platform ->
     val variant = outgoing.variants.create(platform.toString()) {
@@ -183,5 +190,21 @@ configurations.create("cwebpBinary") {
     val jar = tasks.registerJarTask(platform = platform, extract = extract)
 
     variant.artifact(jar)
+  }
+}
+
+val softwareComponentFactory = extensions.getByType(PublishingExtension::class).softwareComponentFactory
+val cwebpComponent = softwareComponentFactory.adhoc("cwebpComponent")
+components.add(cwebpComponent)
+
+cwebpComponent.addVariantsFromConfiguration(cwebpBinaryConfiguration) {
+  mapToMavenScope("runtime")
+}
+
+publishing {
+  publications {
+    create<MavenPublication>("maven") {
+      from(components["cwebpComponent"])
+    }
   }
 }
