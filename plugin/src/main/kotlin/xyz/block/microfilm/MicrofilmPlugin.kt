@@ -19,10 +19,8 @@ import org.gradle.nativeplatform.OperatingSystemFamily.OPERATING_SYSTEM_ATTRIBUT
 
 class MicrofilmPlugin : Plugin<Project> {
   override fun apply(target: Project): Unit = target.run {
-    // Configure the extension and set the default values
+    // Configure the extension
     val extension = extensions.create("microfilm", MicrofilmExtension::class.java)
-    extension.lossless.convention(true)
-    extension.quality.convention(90)
 
     // Create a resolvable configuration for the platform-specific cwebp JAR
     val cwebpConfiguration =
@@ -116,8 +114,7 @@ class MicrofilmPlugin : Plugin<Project> {
           task.cwebpDirectory.from(cwebpDirectory)
           task.microfilmDirectory.set(layout.projectDirectory.dir("src/$name/microfilm"))
           task.resourcesDirectory.set(layout.projectDirectory.dir("src/$name/res"))
-          task.lossless.set(extension.lossless)
-          task.quality.set(extension.quality)
+          task.rules.set(extension.compressionRules)
           task.outputs.upToDateWhen { false }
         }
       val verifySourceSet =

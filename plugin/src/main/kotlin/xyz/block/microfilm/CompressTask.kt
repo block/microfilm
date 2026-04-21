@@ -9,7 +9,7 @@ import kotlinx.serialization.json.Json
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
-import org.gradle.api.provider.Property
+import org.gradle.api.provider.ListProperty
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.PathSensitive
@@ -29,9 +29,7 @@ abstract class CompressTask @Inject constructor(private val execOperations: Exec
 
   @get:Internal abstract val resourcesDirectory: DirectoryProperty
 
-  @get:Internal abstract val lossless: Property<Boolean>
-
-  @get:Internal abstract val quality: Property<Int>
+  @get:Internal abstract val rules: ListProperty<CompressionRule>
 
   private val microfilmDirectoryFile by lazy { microfilmDirectory.get().asFile }
   private val microfilmManifestFile by lazy { File(microfilmDirectoryFile, "manifest.json") }
@@ -66,6 +64,9 @@ abstract class CompressTask @Inject constructor(private val execOperations: Exec
     // Compress the microfilm PNGs to WebP in the resources directory
     val cwebpExecutable = cwebpDirectory.singleFile.resolve("cwebp")
     microfilmPngs.forEach { microfilmPng ->
+      val sourcePath =
+        microfilmPng.relativeTo(base = microfilmDirectoryFile).invariantSeparatorsPath
+      val rule = rules.get().resolve(imagePath = sourcePath)
       val resourcesWebp = microfilmPngToResourcesWebp(microfilmPng = microfilmPng)
       resourcesWebp.parentFile?.mkdirs()
       execOperations.exec { action ->
@@ -74,11 +75,11 @@ abstract class CompressTask @Inject constructor(private val execOperations: Exec
             add(cwebpExecutable.absolutePath)
             add("-metadata")
             add("icc")
-            if (lossless.get()) {
+            if (rule.compressionSettings.lossless) {
               add("-lossless")
             } else {
               add("-q")
-              add(quality.get().toString())
+              add(rule.compressionSettings.quality!!.toString())
             }
             add("-o")
             add(resourcesWebp.absolutePath)
@@ -103,10 +104,12 @@ abstract class CompressTask @Inject constructor(private val execOperations: Exec
           microfilmPngs
             .sortedBy { it.invariantSeparatorsPath }
             .map { microfilmPng ->
+              val sourcePath =
+                microfilmPng.relativeTo(base = microfilmDirectoryFile).invariantSeparatorsPath
+              val rule = rules.get().resolve(imagePath = sourcePath)
               val resourcesWebp = microfilmPngToResourcesWebp(microfilmPng = microfilmPng)
               Manifest.Entry(
-                sourcePath =
-                  microfilmPng.relativeTo(base = microfilmDirectoryFile).invariantSeparatorsPath,
+                sourcePath = sourcePath,
                 sourceSha256 = microfilmPng.sha256(),
                 compressedPath =
                   resourcesWebp.relativeTo(base = resourcesDirectoryFile).invariantSeparatorsPath,
@@ -115,8 +118,8 @@ abstract class CompressTask @Inject constructor(private val execOperations: Exec
                   Manifest.Compressor(
                     name = "cwebp",
                     version = cwebpVersion,
-                    lossless = lossless.get(),
-                    quality = quality.get(),
+                    lossless = rule.compressionSettings.lossless,
+                    quality = rule.compressionSettings.quality,
                   ),
               )
             }

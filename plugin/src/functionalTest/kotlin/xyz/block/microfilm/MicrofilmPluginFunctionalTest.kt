@@ -17,7 +17,7 @@ class MicrofilmPluginFunctionalTest {
   private val microfilmPlugin =
     Plugin("xyz.block.microfilm", AbstractGradleProject.PLUGIN_UNDER_TEST_VERSION)
 
-  private fun androidAppProject(additions: String = "") =
+  private fun androidAppProject(additions: String = MICROFILM_CONFIGURATION) =
     MicrofilmProject()
       .androidApp(
         androidAppPlugin = androidAppPlugin,
@@ -25,7 +25,7 @@ class MicrofilmPluginFunctionalTest {
         additions = additions,
       )
 
-  private fun androidLibProject(additions: String = "") =
+  private fun androidLibProject(additions: String = MICROFILM_CONFIGURATION) =
     MicrofilmProject()
       .androidLib(
         androidLibPlugin = androidLibPlugin,
@@ -112,5 +112,20 @@ class MicrofilmPluginFunctionalTest {
     // Second build reuses the configuration cache
     val result2 = project.build(":app:compressMicrofilm", "--configuration-cache")
     assertThat(result2.output).contains("Configuration cache entry reused")
+  }
+
+  companion object {
+    private val MICROFILM_CONFIGURATION =
+      """
+      microfilm {
+        lossless = true
+
+        images("**/lossy_*.png") {
+          lossless = false
+          quality = 100
+        }
+      }
+      """
+        .trimIndent()
   }
 }
