@@ -160,25 +160,28 @@ fun TaskContainer.registerJarTask(
     archiveClassifier.set(platform.name)
   }
 
-CwebpPlatform.entries.forEach { platform ->
-  val download = tasks.registerDownloadTask(platform = platform)
-  val extract = tasks.registerExtractTask(platform = platform, download = download)
-  val jar = tasks.registerJarTask(platform = platform, extract = extract)
+configurations.create("cwebpBinary") {
+  isCanBeConsumed = true
+  isCanBeResolved = false
 
-  // Create a configuration with OS and Architecture attributes for variant-aware resolution.
-  configurations.create("cwebpBinary$platform") {
-    isCanBeConsumed = true
-    isCanBeResolved = false
-    attributes {
-      attribute(
-        OPERATING_SYSTEM_ATTRIBUTE,
-        objects.named(OperatingSystemFamily::class.java, platform.osFamily),
-      )
-      attribute(
-        ARCHITECTURE_ATTRIBUTE,
-        objects.named(MachineArchitecture::class.java, platform.architecture),
-      )
+  CwebpPlatform.entries.forEach { platform ->
+    val variant = outgoing.variants.create(platform.toString()) {
+      attributes {
+        attribute(
+          OPERATING_SYSTEM_ATTRIBUTE,
+          objects.named(OperatingSystemFamily::class.java, platform.osFamily),
+        )
+        attribute(
+          ARCHITECTURE_ATTRIBUTE,
+          objects.named(MachineArchitecture::class.java, platform.architecture),
+        )
+      }
     }
-    outgoing.artifact(jar)
+
+    val download = tasks.registerDownloadTask(platform = platform)
+    val extract = tasks.registerExtractTask(platform = platform, download = download)
+    val jar = tasks.registerJarTask(platform = platform, extract = extract)
+
+    variant.artifact(jar)
   }
 }
