@@ -5,6 +5,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.type.ArtifactTypeDefinition.ARTIFACT_TYPE_ATTRIBUTE
 import org.gradle.api.artifacts.type.ArtifactTypeDefinition.JAR_TYPE
+import org.gradle.api.attributes.Usage
 import org.gradle.api.file.FileCollection
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.nativeplatform.MachineArchitecture
@@ -30,6 +31,10 @@ class MicrofilmPlugin : Plugin<Project> {
         configuration.isCanBeResolved = true
         configuration.attributes { attrs ->
           attrs.attribute(
+            Usage.USAGE_ATTRIBUTE,
+            objects.named(Usage::class.java, Usage.NATIVE_RUNTIME),
+          )
+          attrs.attribute(
             OPERATING_SYSTEM_ATTRIBUTE,
             objects.named(OperatingSystemFamily::class.java, currentOperatingSystemFamily()),
           )
@@ -39,7 +44,10 @@ class MicrofilmPlugin : Plugin<Project> {
           )
         }
       }
-    dependencies.add(cwebpConfiguration.name, project(":cwebp"))
+    dependencies.add(
+      cwebpConfiguration.name,
+      "app.cash.microfilm:cwebp:${BuildConfig.microfilmVersion}",
+    )
 
     // Register an artifact transform to extract the cwebp binary from its JAR
     dependencies.registerTransform(ExtractCwebpBinary::class.java) { spec ->
