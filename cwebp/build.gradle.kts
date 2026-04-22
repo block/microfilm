@@ -14,6 +14,8 @@ import org.gradle.process.ExecOperations
 plugins {
   base
   `maven-publish`
+  // To publish locally for consumption in plugin tests
+  alias(libs.plugins.testkit)
 }
 
 group = "app.cash.microfilm"

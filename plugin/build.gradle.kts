@@ -2,6 +2,7 @@ plugins {
   `java-gradle-plugin`
   alias(libs.plugins.kotlinJvm)
   alias(libs.plugins.testkit)
+  alias(libs.plugins.buildconfig)
 }
 
 gradlePlugin {
@@ -21,6 +22,8 @@ gradleTestKitSupport {
 tasks.withType<Test>().configureEach {
   useJUnitPlatform()
   systemProperty("agpVersion", libs.versions.agp.get())
+
+  dependsOn(":cwebp:publishAllPublicationsToFunctionalTestRepository")
 }
 
 dependencies {
@@ -29,4 +32,13 @@ dependencies {
   functionalTestImplementation(platform(libs.junit.bom))
   functionalTestImplementation(libs.junit.jupiter)
   functionalTestRuntimeOnly(libs.junit.launcher)
+}
+
+buildConfig {
+  useKotlinOutput {
+    internalVisibility = true
+  }
+
+  packageName("app.cash.microfilm")
+  buildConfigField("String", "microfilmVersion", "\"${project.version}\"")
 }
