@@ -12,6 +12,7 @@ composeUi = "androidx.compose.ui:ui:1.10.6"
 junit-bom = "org.junit:junit-bom:5.12.2"
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter" }
 junit-launcher = { module = "org.junit.platform:junit-platform-launcher" }
+kotlinx-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0"
 ktfmt = "com.facebook:ktfmt:0.62"
 truth = "com.google.truth:truth:1.4.4"
 
@@ -21,5 +22,6 @@ androidLibrary = { id = "com.android.library", version.ref = "agp" }
 buildconfig = { id = "com.github.gmazzo.buildconfig", version = "6.0.9" }
 kotlinCompose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 spotless = { id = "com.diffplug.spotless", version = "8.4.0" }
 testkit = { id = "com.autonomousapps.testkit", version.ref = "testkit" }

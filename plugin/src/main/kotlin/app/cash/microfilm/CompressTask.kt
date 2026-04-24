@@ -1,8 +1,11 @@
 package app.cash.microfilm
 
+import java.io.ByteArrayOutputStream
 import java.io.File
 import javax.inject.Inject
 import kotlin.text.RegexOption.IGNORE_CASE
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.json.Json
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
@@ -30,10 +33,13 @@ abstract class CompressTask @Inject constructor(private val execOperations: Exec
 
   @get:Internal abstract val quality: Property<Int>
 
+  private val microfilmDirectoryFile by lazy { microfilmDirectory.get().asFile }
+  private val microfilmManifestFile by lazy { File(microfilmDirectoryFile, "manifest.json") }
+  private val resourcesDirectoryFile by lazy { resourcesDirectory.get().asFile }
+
   @TaskAction
   fun compress() {
-    // Find the resource PNGs
-    val resourcesDirectoryFile = resourcesDirectory.get().asFile
+    // Find the resources PNGs
     val resourcesPngs =
       resourcesDirectoryFile
         .walk()
@@ -42,63 +48,115 @@ abstract class CompressTask @Inject constructor(private val execOperations: Exec
         .filter { it.isInDrawableDirectory() }
         .toList()
 
-    // Sweep the resource PNGs to the microfilm directory
-    val microfilmDirectoryFile = microfilmDirectory.get().asFile
+    // Sweep the resources PNGs to the microfilm directory
     resourcesPngs.forEach { resourcesPng ->
-      val microfilmPng =
-        File(
-          microfilmDirectoryFile,
-          resourcesPng
-            .relativeTo(base = resourcesDirectoryFile)
-            .path
-            .replace(oldChar = '\\', newChar = '/'),
-        )
+      val microfilmPng = resourcesPngToMicrofilmPng(resourcesPng = resourcesPng)
       microfilmPng.parentFile?.mkdirs()
       resourcesPng.copyTo(target = microfilmPng, overwrite = true)
       resourcesPng.delete()
     }
 
-    // Compress the PNGs to WebP in the resources directory
+    // Find the microfilm PNGs
+    val microfilmPngs =
+      microfilmDirectoryFile
+        .walk()
+        .filter { it.isFile && it.extension.equals("png", ignoreCase = true) }
+        .toList()
+
+    // Compress the microfilm PNGs to WebP in the resources directory
     val cwebpExecutable = cwebpDirectory.singleFile.resolve("cwebp")
-    microfilmDirectoryFile
-      .walk()
-      .filter { it.isFile && it.extension.equals("png", ignoreCase = true) }
-      .toList()
-      .forEach { microfilmPng ->
-        val resourcesWebp =
-          File(
-            resourcesDirectoryFile,
-            microfilmPng
-              .relativeTo(base = microfilmDirectoryFile)
-              .path
-              .replace(oldChar = '\\', newChar = '/')
-              .replace(PNG_EXTENSION_PATTERN, ".webp"),
-          )
-        resourcesWebp.parentFile?.mkdirs()
-        execOperations.exec { action ->
-          action.commandLine(
-            buildList {
-              add(cwebpExecutable.absolutePath)
-              add("-metadata")
-              add("icc")
-              if (lossless.get()) {
-                add("-lossless")
-              } else {
-                add("-q")
-                add(quality.get().toString())
-              }
-              add("-o")
-              add(resourcesWebp.absolutePath)
-              add(microfilmPng.absolutePath)
+    microfilmPngs.forEach { microfilmPng ->
+      val resourcesWebp = microfilmPngToResourcesWebp(microfilmPng = microfilmPng)
+      resourcesWebp.parentFile?.mkdirs()
+      execOperations.exec { action ->
+        action.commandLine(
+          buildList {
+            add(cwebpExecutable.absolutePath)
+            add("-metadata")
+            add("icc")
+            if (lossless.get()) {
+              add("-lossless")
+            } else {
+              add("-q")
+              add(quality.get().toString())
             }
-          )
-        }
+            add("-o")
+            add(resourcesWebp.absolutePath)
+            add(microfilmPng.absolutePath)
+          }
+        )
       }
+    }
+
+    // Get the current cwebp version
+    val output = ByteArrayOutputStream()
+    execOperations.exec { action ->
+      action.commandLine(cwebpExecutable.absolutePath, "-version")
+      action.standardOutput = output
+    }
+    val cwebpVersion = output.toString().lines().first().trim()
+
+    // Create the manifest
+    val manifest =
+      Manifest(
+        entries =
+          microfilmPngs
+            .sortedBy { it.invariantSeparatorsPath }
+            .map { microfilmPng ->
+              val resourcesWebp = microfilmPngToResourcesWebp(microfilmPng = microfilmPng)
+              Manifest.Entry(
+                sourcePath =
+                  microfilmPng.relativeTo(base = microfilmDirectoryFile).invariantSeparatorsPath,
+                sourceSha256 = microfilmPng.sha256(),
+                compressedPath =
+                  resourcesWebp.relativeTo(base = resourcesDirectoryFile).invariantSeparatorsPath,
+                compressedSha256 = resourcesWebp.sha256(),
+                compressor =
+                  Manifest.Compressor(
+                    name = "cwebp",
+                    version = cwebpVersion,
+                    lossless = lossless.get(),
+                    quality = quality.get(),
+                  ),
+              )
+            }
+      )
+
+    // Write the manifest to disk
+    if (manifest.entries.isEmpty()) {
+      microfilmManifestFile.delete()
+    } else {
+      microfilmManifestFile.writeText(
+        text = JSON.encodeToString(serializer = Manifest.serializer(), value = manifest) + "\n"
+      )
+    }
   }
+
+  private fun resourcesPngToMicrofilmPng(resourcesPng: File) =
+    File(
+      microfilmDirectoryFile,
+      resourcesPng.relativeTo(base = resourcesDirectoryFile).invariantSeparatorsPath,
+    )
+
+  private fun microfilmPngToResourcesWebp(microfilmPng: File) =
+    File(
+      resourcesDirectoryFile,
+      microfilmPng
+        .relativeTo(base = microfilmDirectoryFile)
+        .invariantSeparatorsPath
+        .replace(PNG_EXTENSION_PATTERN, ".webp"),
+    )
 
   companion object {
     private val DRAWABLE_DIRECTORY_PATTERN = Regex(pattern = "^drawable(-.*)?$")
     private val PNG_EXTENSION_PATTERN = Regex(pattern = "\\.png$", option = IGNORE_CASE)
+
+    @OptIn(ExperimentalSerializationApi::class)
+    private val JSON = Json {
+      encodeDefaults = true
+      prettyPrint = true
+      prettyPrintIndent = "  "
+    }
 
     private fun File.isInDrawableDirectory(): Boolean {
       return parentFile?.name?.let { DRAWABLE_DIRECTORY_PATTERN.matches(it) } == true
