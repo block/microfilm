@@ -6,7 +6,5 @@ plugins {
 android {
   namespace = "app.cash.microfilm.sample.library"
   compileSdk = 36
-  defaultConfig {
-    minSdk = 24
-  }
+  defaultConfig { minSdk = 24 }
 }
