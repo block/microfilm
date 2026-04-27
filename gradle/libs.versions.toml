@@ -1,7 +1,7 @@
 [versions]
 agp = "9.1.1"
 cwebp = "1.6.0"
-kotlin = "2.3.20"
+kotlin = "2.3.21"
 testkit = "0.18"
 
 [libraries]
