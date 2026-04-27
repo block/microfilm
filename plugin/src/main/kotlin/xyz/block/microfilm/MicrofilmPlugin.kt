@@ -1,4 +1,4 @@
-package app.cash.microfilm
+package xyz.block.microfilm
 
 import com.android.build.api.dsl.CommonExtension
 import org.gradle.api.Plugin
@@ -46,7 +46,7 @@ class MicrofilmPlugin : Plugin<Project> {
       }
     dependencies.add(
       cwebpConfiguration.name,
-      "app.cash.microfilm:cwebp:${BuildConfig.microfilmVersion}",
+      "xyz.block.microfilm:cwebp:${BuildConfig.microfilmVersion}",
     )
 
     // Register an artifact transform to extract the cwebp binary from its JAR

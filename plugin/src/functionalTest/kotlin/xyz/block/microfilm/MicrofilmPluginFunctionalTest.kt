@@ -1,4 +1,4 @@
-package app.cash.microfilm
+package xyz.block.microfilm
 
 import com.autonomousapps.kit.AbstractGradleProject
 import com.autonomousapps.kit.GradleBuilder
@@ -15,7 +15,7 @@ class MicrofilmPluginFunctionalTest {
   private val androidAppPlugin = Plugin("com.android.application", agpVersion)
   private val androidLibPlugin = Plugin("com.android.library", agpVersion)
   private val microfilmPlugin =
-    Plugin("app.cash.microfilm", AbstractGradleProject.PLUGIN_UNDER_TEST_VERSION)
+    Plugin("xyz.block.microfilm", AbstractGradleProject.PLUGIN_UNDER_TEST_VERSION)
 
   private fun androidAppProject(additions: String = "") =
     MicrofilmProject()

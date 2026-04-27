@@ -1,10 +1,10 @@
 plugins {
   alias(libs.plugins.androidLibrary)
-  id("app.cash.microfilm")
+  id("xyz.block.microfilm")
 }
 
 android {
-  namespace = "app.cash.microfilm.sample.library"
+  namespace = "xyz.block.microfilm.sample.library"
   compileSdk = 36
   defaultConfig { minSdk = 24 }
 }

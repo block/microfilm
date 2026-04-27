@@ -1,4 +1,4 @@
-package app.cash.microfilm
+package xyz.block.microfilm
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.CacheableTask
