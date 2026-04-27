@@ -1,6 +1,6 @@
 import com.diffplug.gradle.spotless.SpotlessExtension
 
-buildscript { dependencies { classpath("app.cash.microfilm:plugin") } }
+buildscript { dependencies { classpath("xyz.block.microfilm:plugin") } }
 
 plugins {
   alias(libs.plugins.androidApplication) apply false

@@ -1,4 +1,4 @@
-package app.cash.microfilm.sample.app
+package xyz.block.microfilm.sample.app
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -15,8 +15,8 @@ import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import app.cash.microfilm.sample.app.R as AppR
-import app.cash.microfilm.sample.library.R as LibraryR
+import xyz.block.microfilm.sample.app.R as AppR
+import xyz.block.microfilm.sample.library.R as LibraryR
 
 class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {

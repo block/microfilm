@@ -18,7 +18,7 @@ plugins {
   alias(libs.plugins.testkit)
 }
 
-group = "app.cash.microfilm"
+group = "xyz.block.microfilm"
 
 enum class CwebpPlatform(
   val osFamily: String,

@@ -1,14 +1,14 @@
 plugins {
   alias(libs.plugins.androidApplication)
   alias(libs.plugins.kotlinCompose)
-  id("app.cash.microfilm")
+  id("xyz.block.microfilm")
 }
 
 android {
-  namespace = "app.cash.microfilm.sample.app"
+  namespace = "xyz.block.microfilm.sample.app"
   compileSdk = 36
   defaultConfig {
-    applicationId = "app.cash.microfilm.sample"
+    applicationId = "xyz.block.microfilm.sample"
     minSdk = 24
     targetSdk = 36
   }

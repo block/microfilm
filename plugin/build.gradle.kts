@@ -9,8 +9,8 @@ plugins {
 gradlePlugin {
   plugins {
     create("microfilm") {
-      id = "app.cash.microfilm"
-      implementationClass = "app.cash.microfilm.MicrofilmPlugin"
+      id = "xyz.block.microfilm"
+      implementationClass = "xyz.block.microfilm.MicrofilmPlugin"
     }
   }
 }
@@ -40,6 +40,6 @@ dependencies {
 buildConfig {
   useKotlinOutput { internalVisibility = true }
 
-  packageName("app.cash.microfilm")
+  packageName("xyz.block.microfilm")
   buildConfigField("String", "microfilmVersion", "\"${project.version}\"")
 }

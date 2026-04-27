@@ -1,4 +1,4 @@
-package app.cash.microfilm
+package xyz.block.microfilm
 
 import java.io.ByteArrayOutputStream
 import java.io.File

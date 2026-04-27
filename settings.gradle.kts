@@ -23,6 +23,6 @@ include(":cwebp", ":plugin", ":sample:app", ":sample:library")
 
 includeBuild("build-logic") {
   dependencySubstitution {
-    substitute(module("app.cash.microfilm:plugin")).using(project(":plugin"))
+    substitute(module("xyz.block.microfilm:plugin")).using(project(":plugin"))
   }
 }

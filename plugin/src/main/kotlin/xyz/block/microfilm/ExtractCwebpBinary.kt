@@ -1,4 +1,4 @@
-package app.cash.microfilm
+package xyz.block.microfilm
 
 import java.util.zip.ZipInputStream
 import org.gradle.api.artifacts.transform.CacheableTransform
