@@ -1,5 +1,5 @@
 [versions]
-agp = "9.1.1"
+agp = "9.2.0"
 cwebp = "1.6.0"
 kotlin = "2.3.20"
 testkit = "0.18"
@@ -7,14 +7,14 @@ testkit = "0.18"
 [libraries]
 agp = { module = "com.android.tools.build:gradle", version.ref = "agp" }
 androidActivityCompose = "androidx.activity:activity-compose:1.13.0"
-composeMaterial = "androidx.compose.material:material:1.10.6"
-composeUi = "androidx.compose.ui:ui:1.10.6"
+composeMaterial = "androidx.compose.material:material:1.11.0"
+composeUi = "androidx.compose.ui:ui:1.11.0"
 junit-bom = "org.junit:junit-bom:5.12.2"
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter" }
 junit-launcher = { module = "org.junit.platform:junit-platform-launcher" }
 kotlinx-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0"
 ktfmt = "com.facebook:ktfmt:0.62"
-truth = "com.google.truth:truth:1.4.4"
+truth = "com.google.truth:truth:1.4.5"
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
