@@ -9,7 +9,7 @@ agp = { module = "com.android.tools.build:gradle", version.ref = "agp" }
 androidActivityCompose = "androidx.activity:activity-compose:1.13.0"
 composeMaterial = "androidx.compose.material:material:1.10.6"
 composeUi = "androidx.compose.ui:ui:1.10.6"
-junit-bom = "org.junit:junit-bom:5.12.2"
+junit-bom = "org.junit:junit-bom:5.14.4"
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter" }
 junit-launcher = { module = "org.junit.platform:junit-platform-launcher" }
 kotlinx-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0"
