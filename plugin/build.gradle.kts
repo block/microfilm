@@ -32,6 +32,11 @@ dependencies {
 
   implementation(libs.kotlinx.serialization.json)
 
+  testImplementation(libs.assertk)
+  testImplementation(platform(libs.junit.bom))
+  testImplementation(libs.junit.jupiter)
+  testRuntimeOnly(libs.junit.launcher)
+
   functionalTestImplementation(platform(libs.junit.bom))
   functionalTestImplementation(libs.junit.jupiter)
   functionalTestRuntimeOnly(libs.junit.launcher)
