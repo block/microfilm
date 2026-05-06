@@ -8,3 +8,8 @@ android {
   compileSdk = 36
   defaultConfig { minSdk = 24 }
 }
+
+microfilm {
+  lossless = true
+  compressionFactor = 90
+}

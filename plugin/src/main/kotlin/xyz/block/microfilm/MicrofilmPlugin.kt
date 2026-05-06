@@ -44,7 +44,11 @@ class MicrofilmPlugin : Plugin<Project> {
       }
     dependencies.add(
       cwebpConfiguration.name,
-      "xyz.block.microfilm:cwebp:${BuildConfig.microfilmVersion}",
+      if (findProperty("xyz.block.microfilm.internal")?.toString() == "true") {
+        project(":cwebp")
+      } else {
+        "xyz.block.microfilm:cwebp:${BuildConfig.microfilmVersion}"
+      },
     )
 
     // Register an artifact transform to extract the cwebp binary from its JAR
