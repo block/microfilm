@@ -77,9 +77,10 @@ abstract class CompressTask @Inject constructor(private val execOperations: Exec
             add("icc")
             if (rule.compressionSettings.lossless) {
               add("-lossless")
-            } else {
+            }
+            rule.compressionSettings.compressionFactor?.let { compressionFactor ->
               add("-q")
-              add(rule.compressionSettings.quality!!.toString())
+              add(compressionFactor.toString())
             }
             add("-o")
             add(resourcesWebp.absolutePath)
@@ -119,7 +120,7 @@ abstract class CompressTask @Inject constructor(private val execOperations: Exec
                     name = "cwebp",
                     version = cwebpVersion,
                     lossless = rule.compressionSettings.lossless,
-                    quality = rule.compressionSettings.quality,
+                    compressionFactor = rule.compressionSettings.compressionFactor,
                   ),
               )
             }

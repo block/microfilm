@@ -5,10 +5,17 @@ import org.junit.jupiter.api.assertThrows
 
 class CompressionSettingsTest {
   @Test
-  fun `init validates quality range`() {
-    assertThrows<IllegalArgumentException> { CompressionSettings(lossless = true, quality = -1) }
-    CompressionSettings(lossless = true, quality = 0)
-    CompressionSettings(lossless = true, quality = 100)
-    assertThrows<IllegalArgumentException> { CompressionSettings(lossless = true, quality = 101) }
+  fun `init validates compressionFactor range`() {
+    assertThrows<IllegalArgumentException> {
+      CompressionSettings(lossless = true, compressionFactor = -1)
+    }
+
+    CompressionSettings(lossless = true, compressionFactor = null)
+    CompressionSettings(lossless = true, compressionFactor = 0)
+    CompressionSettings(lossless = true, compressionFactor = 100)
+
+    assertThrows<IllegalArgumentException> {
+      CompressionSettings(lossless = true, compressionFactor = 101)
+    }
   }
 }

@@ -57,6 +57,6 @@ class CompressionRuleTest {
   private fun CompressionRule(pattern: String) =
     CompressionRule(
       pattern = pattern,
-      compressionSettings = CompressionSettings(lossless = true, quality = null),
+      compressionSettings = CompressionSettings(lossless = true, compressionFactor = null),
     )
 }
