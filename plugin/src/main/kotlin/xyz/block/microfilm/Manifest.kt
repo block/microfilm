@@ -18,6 +18,6 @@ data class Manifest(val entries: List<Entry> = emptyList()) {
     val name: String,
     val version: String,
     val lossless: Boolean,
-    val quality: Int?,
+    val compressionFactor: Int?,
   )
 }

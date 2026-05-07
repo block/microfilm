@@ -122,7 +122,7 @@ class MicrofilmPluginFunctionalTest {
 
         images("**/lossy_*.png") {
           lossless = false
-          quality = 100
+          compressionFactor = 100
         }
       }
       """
