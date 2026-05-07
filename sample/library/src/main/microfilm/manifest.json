@@ -9,7 +9,7 @@
         "name": "cwebp",
         "version": "1.6.0",
         "lossless": true,
-        "quality": 90
+        "compressionFactor": 90
       }
     },
     {
@@ -21,7 +21,7 @@
         "name": "cwebp",
         "version": "1.6.0",
         "lossless": true,
-        "quality": 90
+        "compressionFactor": 90
       }
     },
     {
@@ -33,7 +33,7 @@
         "name": "cwebp",
         "version": "1.6.0",
         "lossless": true,
-        "quality": 90
+        "compressionFactor": 90
       }
     },
     {
@@ -45,7 +45,7 @@
         "name": "cwebp",
         "version": "1.6.0",
         "lossless": true,
-        "quality": 90
+        "compressionFactor": 90
       }
     },
     {
@@ -57,7 +57,7 @@
         "name": "cwebp",
         "version": "1.6.0",
         "lossless": true,
-        "quality": 90
+        "compressionFactor": 90
       }
     }
   ]

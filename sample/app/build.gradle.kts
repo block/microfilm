@@ -20,3 +20,8 @@ dependencies {
   implementation(libs.composeUi)
   implementation(projects.sample.library)
 }
+
+microfilm {
+  lossless = true
+  compressionFactor = 90
+}
