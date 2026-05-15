@@ -118,9 +118,11 @@ class MicrofilmPluginFunctionalTest {
     private val MICROFILM_CONFIGURATION =
       """
       microfilm {
-        lossless = true
+        compress {
+          lossless = true
+        }
 
-        images("**/lossy_*.png") {
+        compress("**/lossy_*.png") {
           lossless = false
           compressionFactor = 100
         }

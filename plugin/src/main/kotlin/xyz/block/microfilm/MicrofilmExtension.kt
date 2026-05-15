@@ -4,28 +4,24 @@ import javax.inject.Inject
 import org.gradle.api.Action
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.ListProperty
-import org.gradle.api.provider.Provider
 import org.gradle.api.provider.ProviderFactory
 
-abstract class MicrofilmExtension : CompressionSettings.Spec() {
+abstract class MicrofilmExtension {
   @get:Inject internal abstract val objects: ObjectFactory
   @get:Inject internal abstract val providers: ProviderFactory
 
-  internal val compressionRules: Provider<List<CompressionRule>>
-    get() = providers.provider {
-      buildList {
-        add(CompressionRule(pattern = "**", compressionSettings = resolve()))
-        addAll(compressionRuleOverrides.get())
-      }
-    }
+  internal abstract val compressionRules: ListProperty<CompressionRule>
 
-  internal abstract val compressionRuleOverrides: ListProperty<CompressionRule>
+  /** Compresses all images using the given settings. */
+  fun compress(action: Action<CompressionSettings.Spec>) {
+    compress(pattern = "**", action = action)
+  }
 
-  /** Overrides the default compression settings for images matching the given glob [pattern]. */
-  fun images(pattern: String, action: Action<CompressionSettings.Spec>) {
+  /** Compresses images matching the given glob [pattern] using the given settings. */
+  fun compress(pattern: String, action: Action<CompressionSettings.Spec>) {
     val spec = objects.newInstance(CompressionSettings.Spec::class.java)
     action.execute(spec)
-    compressionRuleOverrides.add(
+    compressionRules.add(
       providers.provider {
         CompressionRule(pattern = pattern, compressionSettings = spec.resolve())
       }

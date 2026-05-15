@@ -22,6 +22,8 @@ dependencies {
 }
 
 microfilm {
-  lossless = true
-  compressionFactor = 90
+  compress {
+    lossless = true
+    compressionFactor = 90
+  }
 }
