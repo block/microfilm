@@ -5,6 +5,7 @@ import org.gradle.api.Action
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.ProviderFactory
+import xyz.block.microfilm.ImageSettings.Exclude
 
 abstract class MicrofilmExtension {
   @get:Inject internal abstract val objects: ObjectFactory
@@ -12,17 +13,18 @@ abstract class MicrofilmExtension {
 
   internal abstract val imageRules: ListProperty<ImageRule>
 
-  /** Compresses all images using the given settings. */
-  fun compress(action: Action<ImageSettings.Spec>) {
-    compress(pattern = "**", action = action)
-  }
-
-  /** Compresses images matching the given glob [pattern] using the given settings. */
-  fun compress(pattern: String, action: Action<ImageSettings.Spec>) {
-    val spec = objects.newInstance(ImageSettings.Spec::class.java)
+  /** Compresses the images matching the given glob [pattern]. Matches all images by default. */
+  @JvmOverloads
+  fun compress(pattern: String = "**", action: Action<ImageSettings.Compress.Spec>) {
+    val spec = objects.newInstance(ImageSettings.Compress.Spec::class.java)
     action.execute(spec)
     imageRules.add(
       providers.provider { ImageRule(pattern = pattern, imageSettings = spec.resolve()) }
     )
+  }
+
+  /** Excludes the images matching the given glob [pattern]. */
+  fun exclude(pattern: String) {
+    imageRules.add(providers.provider { ImageRule(pattern = pattern, imageSettings = Exclude) })
   }
 }

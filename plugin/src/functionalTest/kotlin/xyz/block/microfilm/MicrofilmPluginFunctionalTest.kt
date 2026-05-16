@@ -126,6 +126,8 @@ class MicrofilmPluginFunctionalTest {
           lossless = false
           compressionFactor = 100
         }
+
+        exclude("**/excluded_*.png")
       }
       """
         .trimIndent()

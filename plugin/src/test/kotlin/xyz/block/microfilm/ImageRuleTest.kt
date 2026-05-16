@@ -67,6 +67,6 @@ class ImageRuleTest {
   private fun ImageRule(pattern: String) =
     ImageRule(
       pattern = pattern,
-      imageSettings = ImageSettings(lossless = true, compressionFactor = null),
+      imageSettings = ImageSettings.Compress(lossless = true, compressionFactor = null),
     )
 }

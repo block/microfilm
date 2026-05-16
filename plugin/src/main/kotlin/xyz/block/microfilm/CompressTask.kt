@@ -17,6 +17,8 @@ import org.gradle.api.tasks.PathSensitivity.RELATIVE
 import org.gradle.api.tasks.TaskAction
 import org.gradle.process.ExecOperations
 import org.gradle.work.DisableCachingByDefault
+import xyz.block.microfilm.ImageSettings.Compress
+import xyz.block.microfilm.ImageSettings.Exclude
 
 @DisableCachingByDefault(because = "This task modifies the source tree in place")
 abstract class CompressTask @Inject constructor(private val execOperations: ExecOperations) :
@@ -49,7 +51,7 @@ abstract class CompressTask @Inject constructor(private val execOperations: Exec
     // Sweep the resources PNGs to the microfilm directory
     resourcesPngs
       .filter { resourcesPng ->
-        resourcesPng.relativeTo(base = resourcesDirectoryFile).resolveRule() != null
+        resourcesPng.relativeTo(base = resourcesDirectoryFile).resolveImageSettings() is Compress
       }
       .forEach { resourcesPng ->
         val microfilmPng = resourcesPngToMicrofilmPng(resourcesPng = resourcesPng)
@@ -69,11 +71,9 @@ abstract class CompressTask @Inject constructor(private val execOperations: Exec
     val cwebpExecutable = cwebpDirectory.singleFile.resolve("cwebp")
     microfilmPngs
       .mapNotNull { microfilmPng ->
-        microfilmPng.relativeTo(base = microfilmDirectoryFile).resolveRule()?.let {
-          microfilmPng to it
-        }
+        microfilmPng.relativeTo(base = microfilmDirectoryFile).pairWithImageSettings()
       }
-      .forEach { (microfilmPng, rule) ->
+      .forEach { (microfilmPng, imageSettings) ->
         val resourcesWebp = microfilmPngToResourcesWebp(microfilmPng = microfilmPng)
         resourcesWebp.parentFile?.mkdirs()
         execOperations.exec { action ->
@@ -82,10 +82,10 @@ abstract class CompressTask @Inject constructor(private val execOperations: Exec
               add(cwebpExecutable.absolutePath)
               add("-metadata")
               add("icc")
-              if (rule.imageSettings.lossless) {
+              if (imageSettings.lossless) {
                 add("-lossless")
               }
-              rule.imageSettings.compressionFactor?.let { compressionFactor ->
+              imageSettings.compressionFactor?.let { compressionFactor ->
                 add("-q")
                 add(compressionFactor.toString())
               }
@@ -112,11 +112,9 @@ abstract class CompressTask @Inject constructor(private val execOperations: Exec
           microfilmPngs
             .sortedBy { microfilmPng -> microfilmPng.invariantSeparatorsPath }
             .mapNotNull { microfilmPng ->
-              microfilmPng.relativeTo(base = microfilmDirectoryFile).resolveRule()?.let {
-                microfilmPng to it
-              }
+              microfilmPng.relativeTo(base = microfilmDirectoryFile).pairWithImageSettings()
             }
-            .map { (microfilmPng, rule) ->
+            .map { (microfilmPng, imageSettings) ->
               val resourcesWebp = microfilmPngToResourcesWebp(microfilmPng = microfilmPng)
               Manifest.Entry(
                 sourcePath =
@@ -129,8 +127,8 @@ abstract class CompressTask @Inject constructor(private val execOperations: Exec
                   Manifest.Compressor(
                     name = "cwebp",
                     version = cwebpVersion,
-                    lossless = rule.imageSettings.lossless,
-                    compressionFactor = rule.imageSettings.compressionFactor,
+                    lossless = imageSettings.lossless,
+                    compressionFactor = imageSettings.compressionFactor,
                   ),
               )
             }
@@ -161,8 +159,13 @@ abstract class CompressTask @Inject constructor(private val execOperations: Exec
         .replace(PNG_EXTENSION_PATTERN, ".webp"),
     )
 
-  private fun File.resolveRule(): ImageRule? {
-    return rules.get().resolve(imagePath = invariantSeparatorsPath)
+  private fun File.pairWithImageSettings(): Pair<File, Compress>? {
+    val imageSettings = resolveImageSettings()
+    return if (imageSettings is Compress) this to imageSettings else null
+  }
+
+  private fun File.resolveImageSettings(): ImageSettings {
+    return rules.get().resolve(imagePath = invariantSeparatorsPath)?.imageSettings ?: Exclude
   }
 
   companion object {
