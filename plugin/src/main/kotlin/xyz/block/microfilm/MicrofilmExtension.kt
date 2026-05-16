@@ -10,21 +10,19 @@ abstract class MicrofilmExtension {
   @get:Inject internal abstract val objects: ObjectFactory
   @get:Inject internal abstract val providers: ProviderFactory
 
-  internal abstract val compressionRules: ListProperty<CompressionRule>
+  internal abstract val imageRules: ListProperty<ImageRule>
 
   /** Compresses all images using the given settings. */
-  fun compress(action: Action<CompressionSettings.Spec>) {
+  fun compress(action: Action<ImageSettings.Spec>) {
     compress(pattern = "**", action = action)
   }
 
   /** Compresses images matching the given glob [pattern] using the given settings. */
-  fun compress(pattern: String, action: Action<CompressionSettings.Spec>) {
-    val spec = objects.newInstance(CompressionSettings.Spec::class.java)
+  fun compress(pattern: String, action: Action<ImageSettings.Spec>) {
+    val spec = objects.newInstance(ImageSettings.Spec::class.java)
     action.execute(spec)
-    compressionRules.add(
-      providers.provider {
-        CompressionRule(pattern = pattern, compressionSettings = spec.resolve())
-      }
+    imageRules.add(
+      providers.provider { ImageRule(pattern = pattern, imageSettings = spec.resolve()) }
     )
   }
 }

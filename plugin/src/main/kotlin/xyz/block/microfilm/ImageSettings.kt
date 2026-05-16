@@ -2,7 +2,7 @@ package xyz.block.microfilm
 
 import org.gradle.api.provider.Property
 
-data class CompressionSettings(val lossless: Boolean, val compressionFactor: Int?) {
+data class ImageSettings(val lossless: Boolean, val compressionFactor: Int?) {
   init {
     if (compressionFactor != null) {
       require(compressionFactor in 0..100) { "compressionFactor must be between 0 and 100" }
@@ -37,11 +37,8 @@ data class CompressionSettings(val lossless: Boolean, val compressionFactor: Int
       lossless.convention(false)
     }
 
-    internal fun resolve(): CompressionSettings {
-      return CompressionSettings(
-        lossless = lossless.get(),
-        compressionFactor = compressionFactor.orNull,
-      )
+    internal fun resolve(): ImageSettings {
+      return ImageSettings(lossless = lossless.get(), compressionFactor = compressionFactor.orNull)
     }
   }
 }

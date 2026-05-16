@@ -29,7 +29,7 @@ abstract class CompressTask @Inject constructor(private val execOperations: Exec
 
   @get:Internal abstract val resourcesDirectory: DirectoryProperty
 
-  @get:Internal abstract val rules: ListProperty<CompressionRule>
+  @get:Internal abstract val rules: ListProperty<ImageRule>
 
   private val microfilmDirectoryFile by lazy { microfilmDirectory.get().asFile }
   private val microfilmManifestFile by lazy { File(microfilmDirectoryFile, "manifest.json") }
@@ -82,10 +82,10 @@ abstract class CompressTask @Inject constructor(private val execOperations: Exec
               add(cwebpExecutable.absolutePath)
               add("-metadata")
               add("icc")
-              if (rule.compressionSettings.lossless) {
+              if (rule.imageSettings.lossless) {
                 add("-lossless")
               }
-              rule.compressionSettings.compressionFactor?.let { compressionFactor ->
+              rule.imageSettings.compressionFactor?.let { compressionFactor ->
                 add("-q")
                 add(compressionFactor.toString())
               }
@@ -129,8 +129,8 @@ abstract class CompressTask @Inject constructor(private val execOperations: Exec
                   Manifest.Compressor(
                     name = "cwebp",
                     version = cwebpVersion,
-                    lossless = rule.compressionSettings.lossless,
-                    compressionFactor = rule.compressionSettings.compressionFactor,
+                    lossless = rule.imageSettings.lossless,
+                    compressionFactor = rule.imageSettings.compressionFactor,
                   ),
               )
             }
@@ -161,7 +161,7 @@ abstract class CompressTask @Inject constructor(private val execOperations: Exec
         .replace(PNG_EXTENSION_PATTERN, ".webp"),
     )
 
-  private fun File.resolveRule(): CompressionRule? {
+  private fun File.resolveRule(): ImageRule? {
     return rules.get().resolve(imagePath = invariantSeparatorsPath)
   }
 
