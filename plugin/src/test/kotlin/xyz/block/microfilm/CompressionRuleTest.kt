@@ -3,6 +3,7 @@ package xyz.block.microfilm
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
+import assertk.assertions.isNull
 import assertk.assertions.isTrue
 import org.junit.jupiter.api.Test
 
@@ -52,6 +53,15 @@ class CompressionRuleTest {
     val compressionRules = listOf(fallback, mdpi, hdpi)
 
     assertThat(compressionRules.resolve(imagePath = "drawable-xhdpi/photo.png")).isEqualTo(fallback)
+  }
+
+  @Test
+  fun `resolve nothing`() {
+    val mdpi = CompressionRule(pattern = "drawable-mdpi/**")
+    val hdpi = CompressionRule(pattern = "drawable-hdpi/**")
+    val compressionRules = listOf(mdpi, hdpi)
+
+    assertThat(compressionRules.resolve(imagePath = "drawable-xhdpi/photo.png")).isNull()
   }
 
   private fun CompressionRule(pattern: String) =

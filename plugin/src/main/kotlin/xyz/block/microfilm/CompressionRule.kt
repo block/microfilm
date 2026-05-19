@@ -11,8 +11,8 @@ data class CompressionRule(val pattern: String, val compressionSettings: Compres
 internal fun CompressionRule.matches(imagePath: String): Boolean =
   FileSystems.getDefault().getPathMatcher("glob:$pattern").matches(Path.of(imagePath))
 
-/** Returns the last [CompressionRule] that applies to the given image. */
-internal fun List<CompressionRule>.resolve(imagePath: String): CompressionRule =
-  last { compressionRule ->
+/** Returns the last [CompressionRule] that matches the given image, or null if none match. */
+internal fun List<CompressionRule>.resolve(imagePath: String): CompressionRule? =
+  lastOrNull { compressionRule ->
     compressionRule.matches(imagePath)
   }

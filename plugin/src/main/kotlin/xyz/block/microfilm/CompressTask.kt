@@ -47,12 +47,16 @@ abstract class CompressTask @Inject constructor(private val execOperations: Exec
         .toList()
 
     // Sweep the resources PNGs to the microfilm directory
-    resourcesPngs.forEach { resourcesPng ->
-      val microfilmPng = resourcesPngToMicrofilmPng(resourcesPng = resourcesPng)
-      microfilmPng.parentFile?.mkdirs()
-      resourcesPng.copyTo(target = microfilmPng, overwrite = true)
-      resourcesPng.delete()
-    }
+    resourcesPngs
+      .filter { resourcesPng ->
+        resourcesPng.relativeTo(base = resourcesDirectoryFile).resolveRule() != null
+      }
+      .forEach { resourcesPng ->
+        val microfilmPng = resourcesPngToMicrofilmPng(resourcesPng = resourcesPng)
+        microfilmPng.parentFile?.mkdirs()
+        resourcesPng.copyTo(target = microfilmPng, overwrite = true)
+        resourcesPng.delete()
+      }
 
     // Find the microfilm PNGs
     val microfilmPngs =
@@ -63,32 +67,35 @@ abstract class CompressTask @Inject constructor(private val execOperations: Exec
 
     // Compress the microfilm PNGs to WebP in the resources directory
     val cwebpExecutable = cwebpDirectory.singleFile.resolve("cwebp")
-    microfilmPngs.forEach { microfilmPng ->
-      val sourcePath =
-        microfilmPng.relativeTo(base = microfilmDirectoryFile).invariantSeparatorsPath
-      val rule = rules.get().resolve(imagePath = sourcePath)
-      val resourcesWebp = microfilmPngToResourcesWebp(microfilmPng = microfilmPng)
-      resourcesWebp.parentFile?.mkdirs()
-      execOperations.exec { action ->
-        action.commandLine(
-          buildList {
-            add(cwebpExecutable.absolutePath)
-            add("-metadata")
-            add("icc")
-            if (rule.compressionSettings.lossless) {
-              add("-lossless")
-            }
-            rule.compressionSettings.compressionFactor?.let { compressionFactor ->
-              add("-q")
-              add(compressionFactor.toString())
-            }
-            add("-o")
-            add(resourcesWebp.absolutePath)
-            add(microfilmPng.absolutePath)
-          }
-        )
+    microfilmPngs
+      .mapNotNull { microfilmPng ->
+        microfilmPng.relativeTo(base = microfilmDirectoryFile).resolveRule()?.let {
+          microfilmPng to it
+        }
       }
-    }
+      .forEach { (microfilmPng, rule) ->
+        val resourcesWebp = microfilmPngToResourcesWebp(microfilmPng = microfilmPng)
+        resourcesWebp.parentFile?.mkdirs()
+        execOperations.exec { action ->
+          action.commandLine(
+            buildList {
+              add(cwebpExecutable.absolutePath)
+              add("-metadata")
+              add("icc")
+              if (rule.compressionSettings.lossless) {
+                add("-lossless")
+              }
+              rule.compressionSettings.compressionFactor?.let { compressionFactor ->
+                add("-q")
+                add(compressionFactor.toString())
+              }
+              add("-o")
+              add(resourcesWebp.absolutePath)
+              add(microfilmPng.absolutePath)
+            }
+          )
+        }
+      }
 
     // Get the current cwebp version
     val output = ByteArrayOutputStream()
@@ -103,14 +110,17 @@ abstract class CompressTask @Inject constructor(private val execOperations: Exec
       Manifest(
         entries =
           microfilmPngs
-            .sortedBy { it.invariantSeparatorsPath }
-            .map { microfilmPng ->
-              val sourcePath =
-                microfilmPng.relativeTo(base = microfilmDirectoryFile).invariantSeparatorsPath
-              val rule = rules.get().resolve(imagePath = sourcePath)
+            .sortedBy { microfilmPng -> microfilmPng.invariantSeparatorsPath }
+            .mapNotNull { microfilmPng ->
+              microfilmPng.relativeTo(base = microfilmDirectoryFile).resolveRule()?.let {
+                microfilmPng to it
+              }
+            }
+            .map { (microfilmPng, rule) ->
               val resourcesWebp = microfilmPngToResourcesWebp(microfilmPng = microfilmPng)
               Manifest.Entry(
-                sourcePath = sourcePath,
+                sourcePath =
+                  microfilmPng.relativeTo(base = microfilmDirectoryFile).invariantSeparatorsPath,
                 sourceSha256 = microfilmPng.sha256(),
                 compressedPath =
                   resourcesWebp.relativeTo(base = resourcesDirectoryFile).invariantSeparatorsPath,
@@ -150,6 +160,10 @@ abstract class CompressTask @Inject constructor(private val execOperations: Exec
         .invariantSeparatorsPath
         .replace(PNG_EXTENSION_PATTERN, ".webp"),
     )
+
+  private fun File.resolveRule(): CompressionRule? {
+    return rules.get().resolve(imagePath = invariantSeparatorsPath)
+  }
 
   companion object {
     private val DRAWABLE_DIRECTORY_PATTERN = Regex(pattern = "^drawable(-.*)?$")
