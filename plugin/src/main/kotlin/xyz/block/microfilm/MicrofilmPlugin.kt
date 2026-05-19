@@ -118,7 +118,7 @@ class MicrofilmPlugin : Plugin<Project> {
           task.cwebpDirectory.from(cwebpDirectory)
           task.microfilmDirectory.set(layout.projectDirectory.dir("src/$name/microfilm"))
           task.resourcesDirectory.set(layout.projectDirectory.dir("src/$name/res"))
-          task.rules.set(extension.compressionRules)
+          task.rules.set(extension.imageRules)
           task.outputs.upToDateWhen { false }
         }
       val verifySourceSet =
