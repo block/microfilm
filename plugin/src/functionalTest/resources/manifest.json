@@ -1,0 +1,16 @@
+{
+  "entries": [
+    {
+      "sourcePath": "drawable/cash_app_green.png",
+      "sourceSha256": "8d5e4ae8fd037e399a244eff0cf9bf17a0580f692f36f067028208b137c68228",
+      "compressedPath": "drawable/cash_app_green.webp",
+      "compressedSha256": "0d837f2f0e776cdb650ea2557327e983a272b831be6db4ce414959178ee452f6",
+      "compressor": {
+        "name": "cwebp",
+        "version": "1.6.0",
+        "lossless": true,
+        "compressionFactor": null
+      }
+    }
+  ]
+}

@@ -79,7 +79,7 @@ class MicrofilmPlugin : Plugin<Project> {
       }
 
     // Configure the tasks to run for each source set
-    plugins.withId("com.android.application") {
+    plugins.withId(PLUGIN_ID_APPLICATION) {
       configureSourceSets(
         extension = extension,
         cwebpDirectory = cwebpDirectory,
@@ -87,7 +87,7 @@ class MicrofilmPlugin : Plugin<Project> {
         verify = verify,
       )
     }
-    plugins.withId("com.android.library") {
+    plugins.withId(PLUGIN_ID_LIBRARY) {
       configureSourceSets(
         extension = extension,
         cwebpDirectory = cwebpDirectory,
@@ -135,6 +135,8 @@ class MicrofilmPlugin : Plugin<Project> {
 
   companion object {
     private const val CWEBP_BINARY_TYPE = "cwebp-binary"
+    private const val PLUGIN_ID_APPLICATION = "com.android.application"
+    private const val PLUGIN_ID_LIBRARY = "com.android.library"
   }
 }
 
@@ -152,6 +154,7 @@ private fun currentMachineArchitecture(): String {
     "aarch64" -> ARM64
     "amd64",
     "x86_64" -> X86_64
+
     else -> error("Unsupported machine architecture")
   }
 }
