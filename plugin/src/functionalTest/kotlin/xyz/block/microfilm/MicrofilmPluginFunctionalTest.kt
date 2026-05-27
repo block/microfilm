@@ -59,7 +59,6 @@ class MicrofilmPluginFunctionalTest {
   }
 
   @Test
-  @Disabled("See https://linear.app/squareup/issue/TCS-780")
   fun `plugin does not apply to non-android project`() {
     val project = vanillaProject()
     val result = GradleBuilder.buildAndFail(project.rootDir, "tasks", "--group=microfilm")

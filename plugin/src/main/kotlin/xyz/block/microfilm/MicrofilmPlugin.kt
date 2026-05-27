@@ -95,6 +95,11 @@ class MicrofilmPlugin : Plugin<Project> {
         verify = verify,
       )
     }
+    afterEvaluate {
+      check(plugins.hasPlugin(PLUGIN_ID_APPLICATION) || plugins.hasPlugin(PLUGIN_ID_LIBRARY)) {
+        "Microfilm requires either the '$PLUGIN_ID_APPLICATION' or '$PLUGIN_ID_LIBRARY' plugin."
+      }
+    }
 
     // Link the verify task to the common check task
     plugins.withId("base") { tasks.named("check").configure { it.dependsOn(verify) } }
