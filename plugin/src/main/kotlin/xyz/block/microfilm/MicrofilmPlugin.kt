@@ -1,6 +1,7 @@
 package xyz.block.microfilm
 
 import com.android.build.api.dsl.CommonExtension
+import java.io.File
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.type.ArtifactTypeDefinition.ARTIFACT_TYPE_ATTRIBUTE
@@ -116,20 +117,29 @@ class MicrofilmPlugin : Plugin<Project> {
       val nameCapitalized = name.replaceFirstChar { it.uppercase() }
 
       // Register subtasks for each source set
+      val microfilmDirectory = layout.projectDirectory.dir("src/$name/microfilm")
+      val microfilmManifest = microfilmDirectory.file("manifest.json")
+      val resourcesDirectory = layout.projectDirectory.dir("src/$name/res")
+      fun hasMicrofilmContent() =
+        microfilmDirectory.asFile.containsPngDrawables() ||
+          microfilmManifest.asFile.exists() ||
+          resourcesDirectory.asFile.containsPngDrawables()
       val compressSourceSet =
         tasks.register("compressMicrofilm$nameCapitalized", CompressTask::class.java) { task ->
           task.description = "Compresses source images for the '$name' source set"
           task.group = "microfilm"
           task.cwebpDirectory.from(cwebpDirectory)
-          task.microfilmDirectory.set(layout.projectDirectory.dir("src/$name/microfilm"))
-          task.resourcesDirectory.set(layout.projectDirectory.dir("src/$name/res"))
+          task.microfilmDirectory.set(microfilmDirectory)
+          task.resourcesDirectory.set(resourcesDirectory)
           task.rules.set(extension.imageRules)
           task.outputs.upToDateWhen { false }
+          task.onlyIf { hasMicrofilmContent() }
         }
       val verifySourceSet =
         tasks.register("verifyMicrofilm$nameCapitalized", VerifyTask::class.java) { task ->
           task.description = "Verifies that the manifest is up to date for the '$name' source set"
           task.group = "microfilm"
+          task.onlyIf { hasMicrofilmContent() }
         }
 
       // Link the subtasks to the parent tasks
@@ -144,6 +154,8 @@ class MicrofilmPlugin : Plugin<Project> {
     private const val PLUGIN_ID_LIBRARY = "com.android.library"
   }
 }
+
+private fun File.containsPngDrawables() = walk().any { file -> file.isPngDrawable }
 
 private fun currentOperatingSystemFamily(): String {
   val operatingSystem = System.getProperty("os.name").lowercase()

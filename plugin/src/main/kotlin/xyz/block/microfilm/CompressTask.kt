@@ -40,13 +40,7 @@ abstract class CompressTask @Inject constructor(private val execOperations: Exec
   @TaskAction
   fun compress() {
     // Find the resources PNGs
-    val resourcesPngs =
-      resourcesDirectoryFile
-        .walk()
-        .filter { it.isFile && it.extension.equals("png", ignoreCase = true) }
-        .filter { !it.name.endsWith(".9.png", ignoreCase = true) }
-        .filter { it.isInDrawableDirectory() }
-        .toList()
+    val resourcesPngs = resourcesDirectoryFile.walk().filter { file -> file.isPngDrawable }.toList()
 
     // Sweep the resources PNGs to the microfilm directory
     resourcesPngs
@@ -61,11 +55,7 @@ abstract class CompressTask @Inject constructor(private val execOperations: Exec
       }
 
     // Find the microfilm PNGs
-    val microfilmPngs =
-      microfilmDirectoryFile
-        .walk()
-        .filter { it.isFile && it.extension.equals("png", ignoreCase = true) }
-        .toList()
+    val microfilmPngs = microfilmDirectoryFile.walk().filter { file -> file.isPngDrawable }.toList()
 
     // Compress the microfilm PNGs to WebP in the resources directory
     val cwebpExecutable = cwebpDirectory.singleFile.resolve("cwebp")
@@ -168,7 +158,6 @@ abstract class CompressTask @Inject constructor(private val execOperations: Exec
   }
 
   companion object {
-    private val DRAWABLE_DIRECTORY_PATTERN = Regex(pattern = "^drawable(-.*)?$")
     private val PNG_EXTENSION_PATTERN = Regex(pattern = "\\.png$", option = IGNORE_CASE)
 
     @OptIn(ExperimentalSerializationApi::class)
@@ -176,10 +165,6 @@ abstract class CompressTask @Inject constructor(private val execOperations: Exec
       encodeDefaults = true
       prettyPrint = true
       prettyPrintIndent = "  "
-    }
-
-    private fun File.isInDrawableDirectory(): Boolean {
-      return parentFile?.name?.let { DRAWABLE_DIRECTORY_PATTERN.matches(it) } == true
     }
   }
 }

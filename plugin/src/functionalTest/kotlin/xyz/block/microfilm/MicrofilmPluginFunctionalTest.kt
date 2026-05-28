@@ -70,7 +70,6 @@ class MicrofilmPluginFunctionalTest {
   }
 
   @Test
-  @Disabled("See https://linear.app/squareup/issue/TCS-708")
   fun `compress task is skipped when source set is empty`() {
     val project = androidLibProject()
     val result = project.build(":lib:compressMicrofilmMain")
@@ -137,7 +136,6 @@ class MicrofilmPluginFunctionalTest {
   }
 
   @Test
-  @Disabled("See https://linear.app/squareup/issue/TCS-708")
   fun `compress task skipped when source set has independent webp image in resources directory`() {
     val project = androidLibProject()
     WEBP_FIXTURE.copyToDirectory(directory = project.libResourcesDrawableDirectory)
@@ -245,7 +243,6 @@ class MicrofilmPluginFunctionalTest {
   }
 
   @Test
-  @Disabled("See https://linear.app/squareup/issue/TCS-708")
   fun `verify task is skipped when source set is empty`() {
     val project = androidLibProject()
     val result = project.build(":lib:verifyMicrofilmMain")
@@ -299,7 +296,6 @@ class MicrofilmPluginFunctionalTest {
   }
 
   @Test
-  @Disabled("See https://linear.app/squareup/issue/TCS-708")
   fun `verify task skipped when source set has independent webp image in resources directory`() {
     val project = androidLibProject()
     WEBP_FIXTURE_LOSSY.copyToDirectory(directory = project.libResourcesDrawableDirectory)
