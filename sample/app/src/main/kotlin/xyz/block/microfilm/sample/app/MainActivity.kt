@@ -31,14 +31,14 @@ class MainActivity : ComponentActivity() {
           Text(text = "App Module", style = MaterialTheme.typography.h6)
           Image(
             modifier = Modifier.size(size = 120.dp),
-            painter = painterResource(AppR.drawable.cash_app_green),
+            painter = painterResource(AppR.drawable.cash_app_green_lossless),
             contentDescription = "App module sample image",
           )
 
           Text(text = "Library Module", style = MaterialTheme.typography.h6)
           Image(
             modifier = Modifier.size(size = 120.dp),
-            painter = painterResource(LibraryR.drawable.cash_app_black),
+            painter = painterResource(LibraryR.drawable.cash_app_black_lossy),
             contentDescription = "Library module sample image",
           )
         }
