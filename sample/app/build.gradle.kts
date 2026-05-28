@@ -22,8 +22,12 @@ dependencies {
 }
 
 microfilm {
-  compress {
-    lossless = true
-    compressionFactor = 90
+  compress { lossless = true }
+
+  compress("**/*_lossy.png") {
+    lossless = false
+    compressionFactor = 100
   }
+
+  exclude("**/*_excluded.png")
 }
