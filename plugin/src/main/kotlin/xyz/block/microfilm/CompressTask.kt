@@ -71,7 +71,9 @@ abstract class CompressTask @Inject constructor(private val execOperations: Exec
     val cwebpExecutable = cwebpDirectory.singleFile.resolve("cwebp")
     microfilmPngs
       .mapNotNull { microfilmPng ->
-        microfilmPng.relativeTo(base = microfilmDirectoryFile).pairWithImageSettings()
+        val imageSettings =
+          microfilmPng.relativeTo(base = microfilmDirectoryFile).resolveImageSettings()
+        if (imageSettings is Compress) microfilmPng to imageSettings else null
       }
       .forEach { (microfilmPng, imageSettings) ->
         val resourcesWebp = microfilmPngToResourcesWebp(microfilmPng = microfilmPng)
@@ -112,7 +114,9 @@ abstract class CompressTask @Inject constructor(private val execOperations: Exec
           microfilmPngs
             .sortedBy { microfilmPng -> microfilmPng.invariantSeparatorsPath }
             .mapNotNull { microfilmPng ->
-              microfilmPng.relativeTo(base = microfilmDirectoryFile).pairWithImageSettings()
+              val imageSettings =
+                microfilmPng.relativeTo(base = microfilmDirectoryFile).resolveImageSettings()
+              if (imageSettings is Compress) microfilmPng to imageSettings else null
             }
             .map { (microfilmPng, imageSettings) ->
               val resourcesWebp = microfilmPngToResourcesWebp(microfilmPng = microfilmPng)
@@ -158,11 +162,6 @@ abstract class CompressTask @Inject constructor(private val execOperations: Exec
         .invariantSeparatorsPath
         .replace(PNG_EXTENSION_PATTERN, ".webp"),
     )
-
-  private fun File.pairWithImageSettings(): Pair<File, Compress>? {
-    val imageSettings = resolveImageSettings()
-    return if (imageSettings is Compress) this to imageSettings else null
-  }
 
   private fun File.resolveImageSettings(): ImageSettings {
     return rules.get().resolve(imagePath = invariantSeparatorsPath)?.imageSettings ?: Exclude

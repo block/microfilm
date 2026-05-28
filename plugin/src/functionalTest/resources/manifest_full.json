@@ -1,0 +1,28 @@
+{
+  "entries": [
+    {
+      "sourcePath": "drawable/cash_app_green_lossless.png",
+      "sourceSha256": "8d5e4ae8fd037e399a244eff0cf9bf17a0580f692f36f067028208b137c68228",
+      "compressedPath": "drawable/cash_app_green_lossless.webp",
+      "compressedSha256": "0d837f2f0e776cdb650ea2557327e983a272b831be6db4ce414959178ee452f6",
+      "compressor": {
+        "name": "cwebp",
+        "version": "1.6.0",
+        "lossless": true,
+        "compressionFactor": null
+      }
+    },
+    {
+      "sourcePath": "drawable/cash_app_green_lossy.png",
+      "sourceSha256": "8d5e4ae8fd037e399a244eff0cf9bf17a0580f692f36f067028208b137c68228",
+      "compressedPath": "drawable/cash_app_green_lossy.webp",
+      "compressedSha256": "a8334bcc1e21108011e0e363cb8f29c0c6dbb954884be099a6330b99f6d0c1f8",
+      "compressor": {
+        "name": "cwebp",
+        "version": "1.6.0",
+        "lossless": false,
+        "compressionFactor": 100
+      }
+    }
+  ]
+}
