@@ -42,11 +42,11 @@ abstract class CompressTask @Inject constructor(private val execOperations: Exec
   @get:PathSensitive(RELATIVE)
   abstract val cwebpDirectory: ConfigurableFileCollection
 
+  @get:Internal abstract val imageRules: ListProperty<ImageRule>
+
   @get:Internal abstract val microfilmDirectory: DirectoryProperty
 
   @get:Internal abstract val resourcesDirectory: DirectoryProperty
-
-  @get:Internal abstract val rules: ListProperty<ImageRule>
 
   private val microfilmDirectoryFile by lazy { microfilmDirectory.get().asFile }
   private val microfilmManifestFile by lazy { File(microfilmDirectoryFile, "manifest.json") }
@@ -169,7 +169,7 @@ abstract class CompressTask @Inject constructor(private val execOperations: Exec
     )
 
   private fun File.resolveImageSettings(): ImageSettings {
-    return rules.get().resolve(imagePath = invariantSeparatorsPath)?.imageSettings ?: Exclude
+    return imageRules.get().resolve(imagePath = invariantSeparatorsPath)?.imageSettings ?: Exclude
   }
 
   companion object {
