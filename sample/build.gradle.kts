@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-  namespace = "xyz.block.microfilm.sample.app"
+  namespace = "xyz.block.microfilm.sample"
   compileSdk = 36
   defaultConfig {
     applicationId = "xyz.block.microfilm.sample"
@@ -18,7 +18,6 @@ dependencies {
   implementation(libs.androidActivityCompose)
   implementation(libs.composeMaterial)
   implementation(libs.composeUi)
-  implementation(projects.sample.library)
 }
 
 microfilm {
