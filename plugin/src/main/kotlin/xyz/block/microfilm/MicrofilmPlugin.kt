@@ -33,7 +33,7 @@ import org.gradle.nativeplatform.OperatingSystemFamily.LINUX
 import org.gradle.nativeplatform.OperatingSystemFamily.MACOS
 import org.gradle.nativeplatform.OperatingSystemFamily.OPERATING_SYSTEM_ATTRIBUTE
 
-class MicrofilmPlugin : Plugin<Project> {
+public class MicrofilmPlugin : Plugin<Project> {
   override fun apply(target: Project): Unit = target.run {
     // Configure the extension
     val extension = extensions.create("microfilm", MicrofilmExtension::class.java)
@@ -166,7 +166,7 @@ class MicrofilmPlugin : Plugin<Project> {
     }
   }
 
-  companion object {
+  private companion object {
     private const val CWEBP_BINARY_TYPE = "cwebp-binary"
     private const val PLUGIN_ID_APPLICATION = "com.android.application"
     private const val PLUGIN_ID_LIBRARY = "com.android.library"

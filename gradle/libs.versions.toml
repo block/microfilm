@@ -21,6 +21,7 @@ ktfmt = "com.facebook:ktfmt:0.62"
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
 buildconfig = { id = "com.github.gmazzo.buildconfig", version = "6.0.9" }
+kotlinApiDump = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version = "0.18.1" }
 kotlinCompose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }

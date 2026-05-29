@@ -36,8 +36,9 @@ import xyz.block.microfilm.ImageSettings.Compress
 import xyz.block.microfilm.ImageSettings.Exclude
 
 @DisableCachingByDefault(because = "This task modifies the source tree in place")
-abstract class CompressTask @Inject constructor(private val execOperations: ExecOperations) :
-  DefaultTask() {
+internal abstract class CompressTask
+@Inject
+constructor(private val execOperations: ExecOperations) : DefaultTask() {
   @get:InputFiles
   @get:PathSensitive(RELATIVE)
   abstract val cwebpDirectory: ConfigurableFileCollection

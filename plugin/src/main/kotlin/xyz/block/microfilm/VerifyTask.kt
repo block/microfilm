@@ -28,7 +28,7 @@ import xyz.block.microfilm.ImageSettings.Compress
 import xyz.block.microfilm.ImageSettings.Exclude
 
 @DisableCachingByDefault(because = "This task produces no outputs")
-abstract class VerifyTask : DefaultTask() {
+internal abstract class VerifyTask : DefaultTask() {
   @get:Internal abstract val imageRules: ListProperty<ImageRule>
 
   @get:Internal abstract val microfilmDirectory: DirectoryProperty

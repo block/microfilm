@@ -3,6 +3,7 @@ import com.vanniktech.maven.publish.JavadocJar
 plugins {
   `java-gradle-plugin`
   alias(libs.plugins.buildconfig)
+  alias(libs.plugins.kotlinApiDump)
   alias(libs.plugins.kotlinJvm)
   alias(libs.plugins.kotlinSerialization)
   alias(libs.plugins.mavenPublish)
@@ -17,6 +18,8 @@ gradlePlugin {
     }
   }
 }
+
+kotlin { explicitApi() }
 
 gradleTestKitSupport {
   disablePublication()
