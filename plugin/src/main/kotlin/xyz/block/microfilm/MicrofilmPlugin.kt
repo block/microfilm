@@ -63,7 +63,7 @@ class MicrofilmPlugin : Plugin<Project> {
       if (findProperty("xyz.block.microfilm.internal")?.toString() == "true") {
         project(":cwebp")
       } else {
-        "xyz.block.microfilm:cwebp:${BuildConfig.microfilmVersion}"
+        "xyz.block.microfilm:microfilm-cwebp:${BuildConfig.microfilmVersion}"
       },
     )
 
