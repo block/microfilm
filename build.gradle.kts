@@ -14,6 +14,7 @@ configure<SpotlessExtension> {
   kotlin {
     target("**/src/**/*.kt")
     ktfmt(libs.ktfmt.get().version).googleStyle()
+    licenseHeaderFile(file("gradle/license-header.txt"))
   }
   kotlinGradle {
     target("**/*.gradle.kts")
