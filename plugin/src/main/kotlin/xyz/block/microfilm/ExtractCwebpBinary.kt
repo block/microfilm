@@ -28,7 +28,7 @@ import org.gradle.api.tasks.PathSensitivity.RELATIVE
 
 /** Extracts the cwebp binary from a platform-specific JAR. */
 @CacheableTransform
-abstract class ExtractCwebpBinary : TransformAction<None> {
+internal abstract class ExtractCwebpBinary : TransformAction<None> {
   @get:InputArtifact
   @get:PathSensitive(RELATIVE)
   abstract val inputJar: Provider<FileSystemLocation>

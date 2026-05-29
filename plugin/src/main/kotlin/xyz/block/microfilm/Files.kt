@@ -35,7 +35,7 @@ internal val File.isWebpDrawable: Boolean
       DRAWABLE_DIRECTORY_PATTERN.matches(input = parentFile.name)
 
 /** Produces the SHA256 hash of the given file. */
-fun File.sha256(): String {
+internal fun File.sha256(): String {
   val digest = MessageDigest.getInstance("SHA-256")
   inputStream().use { input ->
     val buffer = ByteArray(8192)

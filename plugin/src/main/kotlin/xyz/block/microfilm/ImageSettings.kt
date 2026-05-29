@@ -17,22 +17,22 @@ package xyz.block.microfilm
 
 import org.gradle.api.provider.Property
 
-sealed interface ImageSettings {
-  data class Compress(val lossless: Boolean, val compressionFactor: Int?) : ImageSettings {
+public sealed interface ImageSettings {
+  public data class Compress(val lossless: Boolean, val compressionFactor: Int?) : ImageSettings {
     init {
       if (compressionFactor != null) {
         require(compressionFactor in 0..100) { "compressionFactor must be between 0 and 100" }
       }
     }
 
-    abstract class Spec {
+    public abstract class Spec {
       /**
        * Specifies whether the WebP compression is lossy or lossless. The default is false.
        *
        * See the cwebp documentation of the -lossless option for more info:
        * https://developers.google.com/speed/webp/docs/cwebp
        */
-      abstract val lossless: Property<Boolean>
+      public abstract val lossless: Property<Boolean>
 
       /**
        * Specify the compression factor for RGB channels between 0 and 100. The default is 75.
@@ -47,7 +47,7 @@ sealed interface ImageSettings {
        * See the cwebp documentation of the -q option for more info:
        * https://developers.google.com/speed/webp/docs/cwebp
        */
-      abstract val compressionFactor: Property<Int>
+      public abstract val compressionFactor: Property<Int>
 
       init {
         lossless.convention(false)
@@ -58,5 +58,5 @@ sealed interface ImageSettings {
     }
   }
 
-  data object Exclude : ImageSettings
+  public data object Exclude : ImageSettings
 }
