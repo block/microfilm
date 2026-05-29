@@ -23,7 +23,6 @@ import com.autonomousapps.kit.truth.TestKitTruth.Companion.assertThat
 import com.google.common.truth.Truth.assertThat
 import java.io.File
 import org.gradle.testkit.runner.BuildResult
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
 class MicrofilmPluginFunctionalTest {
@@ -266,7 +265,6 @@ class MicrofilmPluginFunctionalTest {
   }
 
   @Test
-  @Disabled("See https://linear.app/squareup/issue/TCS-698")
   fun `verify task fails when source set has orphaned manifest in microfilm directory`() {
     val project = androidLibProject()
     MANIFEST_FIXTURE.copyToDirectory(directory = project.libMicrofilmDirectory)
@@ -277,7 +275,6 @@ class MicrofilmPluginFunctionalTest {
   }
 
   @Test
-  @Disabled("See https://linear.app/squareup/issue/TCS-698")
   fun `verify task fails when source set has uncompressed png image in resources directory`() {
     val project = androidLibProject()
     PNG_FIXTURE.copyToDirectory(directory = project.libResourcesDrawableDirectory)
@@ -288,7 +285,6 @@ class MicrofilmPluginFunctionalTest {
   }
 
   @Test
-  @Disabled("See https://linear.app/squareup/issue/TCS-698")
   fun `verify task fails when source set has uncompressed png image in microfilm directory`() {
     val project = androidLibProject()
     PNG_FIXTURE.copyToDirectory(directory = project.libMicrofilmDrawableDirectory)

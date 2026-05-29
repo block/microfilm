@@ -28,6 +28,12 @@ internal val File.isPngDrawable: Boolean
       !name.endsWith(".9.png", ignoreCase = true) &&
       DRAWABLE_DIRECTORY_PATTERN.matches(input = parentFile.name)
 
+/** True if this is a WebP image in a drawable directory. */
+internal val File.isWebpDrawable: Boolean
+  get() =
+    extension.equals("webp", ignoreCase = true) &&
+      DRAWABLE_DIRECTORY_PATTERN.matches(input = parentFile.name)
+
 /** Produces the SHA256 hash of the given file. */
 fun File.sha256(): String {
   val digest = MessageDigest.getInstance("SHA-256")

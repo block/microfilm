@@ -42,4 +42,20 @@ class FilesTest {
   fun `isPngDrawable for png nine-patch`() {
     assertThat(File("src/main/drawable/image.9.png").isPngDrawable).isFalse()
   }
+
+  @Test
+  fun `isWebpDrawable for png drawable`() {
+    assertThat(File("src/main/drawable/image.png").isWebpDrawable).isFalse()
+  }
+
+  @Test
+  fun `isWebpDrawable for webp asset`() {
+    assertThat(File("src/main/asset/image.webp").isWebpDrawable).isFalse()
+  }
+
+  @Test
+  fun `isWebpDrawable for webp drawables`() {
+    assertThat(File("src/main/drawable/image.webp").isWebpDrawable).isTrue()
+    assertThat(File("src/main/drawable-hdpi/image.webp").isWebpDrawable).isTrue()
+  }
 }
