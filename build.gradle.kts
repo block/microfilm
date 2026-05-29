@@ -5,12 +5,15 @@ buildscript { dependencies { classpath("xyz.block.microfilm:plugin") } }
 plugins {
   alias(libs.plugins.androidApplication) apply false
   alias(libs.plugins.androidLibrary) apply false
+  alias(libs.plugins.dokka)
   alias(libs.plugins.kotlinCompose) apply false
   alias(libs.plugins.kotlinJvm) apply false
   alias(libs.plugins.mavenPublish) apply false
   alias(libs.plugins.mavenPublishBase) apply false
   alias(libs.plugins.spotless)
 }
+
+dependencies { dokka(projects.plugin) }
 
 configure<SpotlessExtension> {
   kotlin {
