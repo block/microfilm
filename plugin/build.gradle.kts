@@ -1,8 +1,7 @@
-import com.vanniktech.maven.publish.JavadocJar
-
 plugins {
   `java-gradle-plugin`
   alias(libs.plugins.buildconfig)
+  alias(libs.plugins.dokka)
   alias(libs.plugins.kotlinApiDump)
   alias(libs.plugins.kotlinJvm)
   alias(libs.plugins.kotlinSerialization)
@@ -55,6 +54,3 @@ buildConfig {
   packageName("xyz.block.microfilm")
   buildConfigField("String", "microfilmVersion", "\"${project.version}\"")
 }
-
-@Suppress("UnstableApiUsage")
-mavenPublishing { configureBasedOnAppliedPlugins(javadocJar = JavadocJar.Empty()) }

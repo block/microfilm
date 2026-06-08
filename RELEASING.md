@@ -35,7 +35,7 @@
    $ git push && git push --tags
    ```
 
-   This will trigger a GitHub Action workflow which will create a GitHub release and publish the
-   release artifacts to Maven Central.
+   This will trigger a GitHub Action workflow which will create a GitHub release, publish the
+   release artifacts to Maven Central, and deploy the API docs to the website.
 
    You're done!

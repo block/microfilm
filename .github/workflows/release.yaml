@@ -36,3 +36,14 @@ jobs:
         with:
           body: ${{ steps.release_notes.outputs.release_notes }}
           discussionCategory: Announcements
+
+      - run: ./gradlew dokkaGenerate
+
+      - name: Deploy docs to website
+        uses: JamesIves/github-pages-deploy-action@d92aa235d04922e8f08b40ce78cc5442fcfbfa2f # v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: site
+          folder: build/dokka/html/
+          target-folder: 0.x/docs/
+          clean: true
