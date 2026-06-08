@@ -22,7 +22,7 @@ import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.ProviderFactory
 import xyz.block.microfilm.ImageSettings.Exclude
 
-abstract class MicrofilmExtension {
+public abstract class MicrofilmExtension {
   @get:Inject internal abstract val objects: ObjectFactory
   @get:Inject internal abstract val providers: ProviderFactory
 
@@ -30,7 +30,7 @@ abstract class MicrofilmExtension {
 
   /** Compresses the images matching the given glob [pattern]. Matches all images by default. */
   @JvmOverloads
-  fun compress(pattern: String = "**", action: Action<ImageSettings.Compress.Spec>) {
+  public fun compress(pattern: String = "**", action: Action<ImageSettings.Compress.Spec>) {
     val spec = objects.newInstance(ImageSettings.Compress.Spec::class.java)
     action.execute(spec)
     imageRules.add(
@@ -39,7 +39,7 @@ abstract class MicrofilmExtension {
   }
 
   /** Excludes the images matching the given glob [pattern]. */
-  fun exclude(pattern: String) {
+  public fun exclude(pattern: String) {
     imageRules.add(providers.provider { ImageRule(pattern = pattern, imageSettings = Exclude) })
   }
 }

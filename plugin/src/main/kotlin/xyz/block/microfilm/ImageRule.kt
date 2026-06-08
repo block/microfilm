@@ -19,7 +19,7 @@ import java.io.Serializable
 import java.nio.file.FileSystems
 import java.nio.file.Path
 
-data class ImageRule(val pattern: String, val imageSettings: ImageSettings) : Serializable
+internal data class ImageRule(val pattern: String, val imageSettings: ImageSettings) : Serializable
 
 /** Returns true if the [ImageRule] matches the given image. */
 internal fun ImageRule.matches(imagePath: String): Boolean =

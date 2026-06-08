@@ -18,7 +18,7 @@ package xyz.block.microfilm
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Manifest(val entries: List<Entry> = emptyList()) {
+internal data class Manifest(val entries: List<Entry> = emptyList()) {
   @Serializable
   data class Entry(
     val sourcePath: String,
