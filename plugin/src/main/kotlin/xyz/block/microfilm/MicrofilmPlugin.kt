@@ -144,9 +144,9 @@ class MicrofilmPlugin : Plugin<Project> {
           task.description = "Compresses source images for the '$name' source set"
           task.group = "microfilm"
           task.cwebpDirectory.from(cwebpDirectory)
+          task.imageRules.set(extension.imageRules)
           task.microfilmDirectory.set(microfilmDirectory)
           task.resourcesDirectory.set(resourcesDirectory)
-          task.rules.set(extension.imageRules)
           task.outputs.upToDateWhen { false }
           task.onlyIf { hasMicrofilmContent() }
         }
