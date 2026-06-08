@@ -1,5 +1,5 @@
 [versions]
-agp = "9.1.1"
+agp = "9.2.1"
 cwebp = "1.6.0"
 kotlin = "2.3.20"
 testkit = "0.18"
@@ -8,20 +8,20 @@ testkit = "0.18"
 agp = { module = "com.android.tools.build:gradle", version.ref = "agp" }
 androidActivityCompose = "androidx.activity:activity-compose:1.13.0"
 assertk = "com.willowtreeapps.assertk:assertk:0.28.1"
-composeMaterial = "androidx.compose.material:material:1.10.6"
-composeUi = "androidx.compose.ui:ui:1.10.6"
+composeMaterial = "androidx.compose.material:material:1.11.2"
+composeUi = "androidx.compose.ui:ui:1.11.2"
 junit-bom = "org.junit:junit-bom:5.12.2"
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter" }
 junit-launcher = { module = "org.junit.platform:junit-platform-launcher" }
 kotlinx-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0"
-ktfmt = "com.facebook:ktfmt:0.62"
+ktfmt = "com.facebook:ktfmt:0.63"
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
-buildconfig = { id = "com.github.gmazzo.buildconfig", version = "6.0.9" }
+buildconfig = { id = "com.github.gmazzo.buildconfig", version = "6.0.10" }
 kotlinCompose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-spotless = { id = "com.diffplug.spotless", version = "8.4.0" }
+spotless = { id = "com.diffplug.spotless", version = "8.6.0" }
 testkit = { id = "com.autonomousapps.testkit", version.ref = "testkit" }
