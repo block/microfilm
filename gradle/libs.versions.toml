@@ -2,6 +2,7 @@
 agp = "9.1.1"
 cwebp = "1.6.0"
 kotlin = "2.3.20"
+mavenPublish = "0.36.0"
 testkit = "0.18"
 
 [libraries]
@@ -23,5 +24,7 @@ buildconfig = { id = "com.github.gmazzo.buildconfig", version = "6.0.9" }
 kotlinCompose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+mavenPublish = { id = "com.vanniktech.maven.publish", version.ref = "mavenPublish" }
+mavenPublishBase = { id = "com.vanniktech.maven.publish.base", version.ref = "mavenPublish" }
 spotless = { id = "com.diffplug.spotless", version = "8.4.0" }
 testkit = { id = "com.autonomousapps.testkit", version.ref = "testkit" }

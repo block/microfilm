@@ -13,8 +13,7 @@ import org.gradle.process.ExecOperations
 
 plugins {
   base
-  `maven-publish`
-  // To publish locally for consumption in plugin tests
+  alias(libs.plugins.mavenPublishBase)
   alias(libs.plugins.testkit)
 }
 
@@ -204,4 +203,11 @@ cwebpComponent.addVariantsFromConfiguration(cwebpBinaryConfiguration) { mapToMav
 
 publishing {
   publications { create<MavenPublication>("maven") { from(components["cwebpComponent"]) } }
+}
+
+@Suppress("UnstableApiUsage")
+mavenPublishing {
+  publishToMavenCentral()
+  signAllPublications()
+  pomFromGradleProperties()
 }
