@@ -15,12 +15,13 @@
       "sourcePath": "drawable/cash_app_green_lossy.png",
       "sourceSha256": "8d5e4ae8fd037e399a244eff0cf9bf17a0580f692f36f067028208b137c68228",
       "compressedPath": "drawable/cash_app_green_lossy.webp",
-      "compressedSha256": "a8334bcc1e21108011e0e363cb8f29c0c6dbb954884be099a6330b99f6d0c1f8",
+      "compressedSha256": "b63b7229b30dbab739402a180028bf9e75bb587c3d354a04047391d54ae18a08",
       "compressor": {
         "name": "cwebp",
         "version": "1.6.0",
         "lossless": false,
-        "compressionFactor": 100
+        "compressionFactor": 100,
+        "compressionMethod": 6
       }
     }
   ]
