@@ -156,6 +156,9 @@ internal abstract class VerifyTask : DefaultTask() {
     imageRules.get().resolve(imagePath = this)?.imageSettings ?: Exclude
 
   companion object {
-    private val JSON = Json { ignoreUnknownKeys = true }
+    private val JSON = Json {
+      explicitNulls = false
+      ignoreUnknownKeys = true
+    }
   }
 }

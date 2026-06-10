@@ -179,6 +179,7 @@ constructor(private val execOperations: ExecOperations) : DefaultTask() {
     @OptIn(ExperimentalSerializationApi::class)
     private val JSON = Json {
       encodeDefaults = true
+      explicitNulls = false
       prettyPrint = true
       prettyPrintIndent = "  "
     }
