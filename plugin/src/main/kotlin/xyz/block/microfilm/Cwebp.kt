@@ -53,6 +53,11 @@ internal class Cwebp(
             add(compressionFactor.toString())
           }
 
+          imageSettings.metadata?.let { metadata ->
+            add("-metadata")
+            add(metadata.toString())
+          }
+
           add("-o")
           add(destinationWebp.absolutePath)
           add(sourcePng.absolutePath)
