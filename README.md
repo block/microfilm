@@ -83,8 +83,7 @@ The resulting manifest file will look something like this:
       "compressor": {
         "name": "cwebp",
         "version": "1.6.0",
-        "lossless": true,
-        "compressionFactor": null
+        "lossless": true
       }
     }
   ]

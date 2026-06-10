@@ -8,8 +8,7 @@
       "compressor": {
         "name": "cwebp",
         "version": "1.6.0",
-        "lossless": true,
-        "compressionFactor": null
+        "lossless": true
       }
     },
     {
