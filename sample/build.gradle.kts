@@ -26,6 +26,7 @@ microfilm {
   compress("**/*_lossy.png") {
     lossless = false
     compressionFactor = 100
+    compressionMethod = 6
   }
 
   exclude("**/*_excluded.png")
