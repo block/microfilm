@@ -350,6 +350,27 @@ class MicrofilmPluginFunctionalTest {
   }
 
   @Test
+  fun `verify task fails when compression settings don't match`() {
+    val project =
+      androidLibProject(
+        additions =
+          """
+          microfilm {
+            compress { lossless = false }
+          }
+          """
+            .trimIndent()
+      )
+    MANIFEST_FIXTURE.copyToDirectory(directory = project.libMicrofilmDirectory)
+    PNG_FIXTURE.copyToDirectory(directory = project.libMicrofilmDrawableDirectory)
+    WEBP_FIXTURE.copyToDirectory(directory = project.libResourcesDrawableDirectory)
+
+    val result = GradleBuilder.buildAndFail(project.rootDir, ":lib:verifyMicrofilmMain")
+
+    assertThat(result).task(":lib:verifyMicrofilmMain").failed()
+  }
+
+  @Test
   fun `verify task is compatible with configuration cache`() {
     val project = androidLibProject()
 
