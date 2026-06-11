@@ -15,7 +15,6 @@
  */
 package xyz.block.microfilm
 
-import java.io.ByteArrayOutputStream
 import java.io.File
 import javax.inject.Inject
 import kotlin.text.RegexOption.IGNORE_CASE
@@ -49,6 +48,7 @@ constructor(private val execOperations: ExecOperations) : DefaultTask() {
 
   @get:Internal abstract val resourcesDirectory: DirectoryProperty
 
+  private val cwebp by lazy { Cwebp(execOperations = execOperations, directory = cwebpDirectory) }
   private val microfilmDirectoryFile by lazy { microfilmDirectory.get().asFile }
   private val microfilmManifestFile by lazy { File(microfilmDirectoryFile, "manifest.json") }
   private val resourcesDirectoryFile by lazy { resourcesDirectory.get().asFile }
@@ -74,7 +74,7 @@ constructor(private val execOperations: ExecOperations) : DefaultTask() {
     val microfilmPngs = microfilmDirectoryFile.walk().filter { file -> file.isPngDrawable }.toList()
 
     // Compress the microfilm PNGs to WebP in the resources directory
-    val cwebpExecutable = cwebpDirectory.singleFile.resolve("cwebp")
+    val cwebpVersion = cwebp.getVersion()
     microfilmPngs
       .mapNotNull { microfilmPng ->
         val imageSettings =
@@ -84,34 +84,12 @@ constructor(private val execOperations: ExecOperations) : DefaultTask() {
       .forEach { (microfilmPng, imageSettings) ->
         val resourcesWebp = microfilmPngToResourcesWebp(microfilmPng = microfilmPng)
         resourcesWebp.parentFile?.mkdirs()
-        execOperations.exec { action ->
-          action.commandLine(
-            buildList {
-              add(cwebpExecutable.absolutePath)
-              add("-metadata")
-              add("icc")
-              if (imageSettings.lossless) {
-                add("-lossless")
-              }
-              imageSettings.compressionFactor?.let { compressionFactor ->
-                add("-q")
-                add(compressionFactor.toString())
-              }
-              add("-o")
-              add(resourcesWebp.absolutePath)
-              add(microfilmPng.absolutePath)
-            }
-          )
-        }
+        cwebp.compress(
+          imageSettings = imageSettings,
+          sourcePng = microfilmPng,
+          destinationWebp = resourcesWebp,
+        )
       }
-
-    // Get the current cwebp version
-    val output = ByteArrayOutputStream()
-    execOperations.exec { action ->
-      action.commandLine(cwebpExecutable.absolutePath, "-version")
-      action.standardOutput = output
-    }
-    val cwebpVersion = output.toString().lines().first().trim()
 
     // Create the manifest
     val manifest =
@@ -133,13 +111,7 @@ constructor(private val execOperations: ExecOperations) : DefaultTask() {
                 compressedPath =
                   resourcesWebp.relativeTo(base = resourcesDirectoryFile).invariantSeparatorsPath,
                 compressedSha256 = resourcesWebp.sha256(),
-                compressor =
-                  Manifest.Compressor(
-                    name = "cwebp",
-                    version = cwebpVersion,
-                    lossless = imageSettings.lossless,
-                    compressionFactor = imageSettings.compressionFactor,
-                  ),
+                compressor = imageSettings.toCompressor(cwebpVersion = cwebpVersion),
               )
             }
       )
