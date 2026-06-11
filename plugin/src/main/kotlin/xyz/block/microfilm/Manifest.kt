@@ -16,6 +16,7 @@
 package xyz.block.microfilm
 
 import kotlinx.serialization.Serializable
+import xyz.block.microfilm.Manifest.Compressor
 
 @Serializable
 internal data class Manifest(val entries: List<Entry> = emptyList()) {
@@ -36,3 +37,11 @@ internal data class Manifest(val entries: List<Entry> = emptyList()) {
     val compressionFactor: Int?,
   )
 }
+
+internal fun ImageSettings.Compress.toCompressor(cwebpVersion: String) =
+  Compressor(
+    name = "cwebp",
+    version = cwebpVersion,
+    lossless = lossless,
+    compressionFactor = compressionFactor,
+  )
