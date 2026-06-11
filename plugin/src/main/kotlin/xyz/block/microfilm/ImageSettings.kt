@@ -21,11 +21,15 @@ public sealed interface ImageSettings {
   public data class Compress(
     val lossless: Boolean = false,
     val compressionFactor: Int? = null,
+    val compressionMethod: Int? = null,
     val metadata: ImageMetadata? = null,
   ) : ImageSettings {
     init {
       if (compressionFactor != null) {
         require(compressionFactor in 0..100) { "compressionFactor must be between 0 and 100" }
+      }
+      if (compressionMethod != null) {
+        require(compressionMethod in 0..6) { "compressionMethod must be between 0 and 6" }
       }
     }
 
@@ -54,6 +58,15 @@ public sealed interface ImageSettings {
       public abstract val compressionFactor: Property<Int>
 
       /**
+       * Specifies the compression method to use between 0 (fastest) and 6 (slowest). The default
+       * is 4.
+       *
+       * See the cwebp documentation of the -m option for more info:
+       * https://developers.google.com/speed/webp/docs/cwebp
+       */
+      public abstract val compressionMethod: Property<Int>
+
+      /**
        * Specifies the metadata to copy from the source image to the compressed image if present.
        * The default is none.
        *
@@ -70,6 +83,7 @@ public sealed interface ImageSettings {
         Compress(
           lossless = lossless.get(),
           compressionFactor = compressionFactor.orNull,
+          compressionMethod = compressionMethod.orNull,
           metadata = metadata.orNull,
         )
     }

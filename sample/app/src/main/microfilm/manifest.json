@@ -15,12 +15,13 @@
       "sourcePath": "drawable-hdpi/cash_app_green_lossy.png",
       "sourceSha256": "bf4efed5cf7bf4bd245c7a02c2a7a2753621040a729eb2d4eb4a4950fc56324e",
       "compressedPath": "drawable-hdpi/cash_app_green_lossy.webp",
-      "compressedSha256": "5739ba0b20eb8caba9d52bd540a8c34a9495b48210c6c305924c9d083a654aa7",
+      "compressedSha256": "38c437a1a0279cd42c69b9ff160dcf2b2b9ccfa05dd774805dce0d77b9234efd",
       "compressor": {
         "name": "cwebp",
         "version": "1.6.0",
         "lossless": false,
-        "compressionFactor": 100
+        "compressionFactor": 100,
+        "compressionMethod": 6
       }
     },
     {
@@ -38,12 +39,13 @@
       "sourcePath": "drawable-mdpi/cash_app_green_lossy.png",
       "sourceSha256": "8d5e4ae8fd037e399a244eff0cf9bf17a0580f692f36f067028208b137c68228",
       "compressedPath": "drawable-mdpi/cash_app_green_lossy.webp",
-      "compressedSha256": "a8334bcc1e21108011e0e363cb8f29c0c6dbb954884be099a6330b99f6d0c1f8",
+      "compressedSha256": "b63b7229b30dbab739402a180028bf9e75bb587c3d354a04047391d54ae18a08",
       "compressor": {
         "name": "cwebp",
         "version": "1.6.0",
         "lossless": false,
-        "compressionFactor": 100
+        "compressionFactor": 100,
+        "compressionMethod": 6
       }
     },
     {
@@ -61,12 +63,13 @@
       "sourcePath": "drawable-xhdpi/cash_app_green_lossy.png",
       "sourceSha256": "52e079d076369047b2f858d292555634abf5c8391043d6ca7aae4d45ea9597f6",
       "compressedPath": "drawable-xhdpi/cash_app_green_lossy.webp",
-      "compressedSha256": "7c9fc9e5a34cf822401c8911efcf570dea2fb8ecd2ba78276e45f88ec56e6a0a",
+      "compressedSha256": "0d74ce29efaffb91eb38e07ab52893df70e598a5987b152f2fbbbc01c9516cfb",
       "compressor": {
         "name": "cwebp",
         "version": "1.6.0",
         "lossless": false,
-        "compressionFactor": 100
+        "compressionFactor": 100,
+        "compressionMethod": 6
       }
     },
     {
@@ -84,12 +87,13 @@
       "sourcePath": "drawable-xxhdpi/cash_app_green_lossy.png",
       "sourceSha256": "2dab093eb043f9a08b3f01e29bd59bb0a2a3a25ce4216eb309c2dc13634f14a3",
       "compressedPath": "drawable-xxhdpi/cash_app_green_lossy.webp",
-      "compressedSha256": "086ec0fd040ee5a9c9b63cd0822f39e5816c7d6b2396f67d11489b735b8a56a7",
+      "compressedSha256": "2fa6a3e6a85799b615086f8a3973d41319c3c7d1d114aeb0c428c14385ff242a",
       "compressor": {
         "name": "cwebp",
         "version": "1.6.0",
         "lossless": false,
-        "compressionFactor": 100
+        "compressionFactor": 100,
+        "compressionMethod": 6
       }
     },
     {
@@ -107,12 +111,13 @@
       "sourcePath": "drawable-xxxhdpi/cash_app_green_lossy.png",
       "sourceSha256": "93d209b09cee5ffc346e8221fa41bcefeed0535b79e62c5a113daff01a3f7f05",
       "compressedPath": "drawable-xxxhdpi/cash_app_green_lossy.webp",
-      "compressedSha256": "ec4f7e3e13650c69bc29c12637645809f4af9d37cdfad44c20ee4119f7e701c6",
+      "compressedSha256": "ed4ef458767f5b0a26c3da827935d081a0679dbc35db881680d7fd6f2c4c5ff2",
       "compressor": {
         "name": "cwebp",
         "version": "1.6.0",
         "lossless": false,
-        "compressionFactor": 100
+        "compressionFactor": 100,
+        "compressionMethod": 6
       }
     }
   ]

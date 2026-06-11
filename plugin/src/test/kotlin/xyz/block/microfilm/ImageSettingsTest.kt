@@ -17,20 +17,28 @@ package xyz.block.microfilm
 
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import xyz.block.microfilm.ImageSettings.Compress
 
 class ImageSettingsTest {
   @Test
   fun `compress init validates compressionFactor range`() {
-    assertThrows<IllegalArgumentException> {
-      ImageSettings.Compress(lossless = true, compressionFactor = -1)
-    }
+    assertThrows<IllegalArgumentException> { Compress(compressionFactor = -1) }
 
-    ImageSettings.Compress(lossless = true, compressionFactor = null)
-    ImageSettings.Compress(lossless = true, compressionFactor = 0)
-    ImageSettings.Compress(lossless = true, compressionFactor = 100)
+    Compress(compressionFactor = null)
+    Compress(compressionFactor = 0)
+    Compress(compressionFactor = 100)
 
-    assertThrows<IllegalArgumentException> {
-      ImageSettings.Compress(lossless = true, compressionFactor = 101)
-    }
+    assertThrows<IllegalArgumentException> { Compress(compressionFactor = 101) }
+  }
+
+  @Test
+  fun `compress init validates compressionMethod range`() {
+    assertThrows<IllegalArgumentException> { Compress(compressionMethod = -1) }
+
+    Compress(compressionMethod = null)
+    Compress(compressionMethod = 0)
+    Compress(compressionMethod = 6)
+
+    assertThrows<IllegalArgumentException> { Compress(compressionMethod = 7) }
   }
 }
