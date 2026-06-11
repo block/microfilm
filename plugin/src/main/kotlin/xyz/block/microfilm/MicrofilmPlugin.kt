@@ -154,6 +154,7 @@ public class MicrofilmPlugin : Plugin<Project> {
         tasks.register("verifyMicrofilm$nameCapitalized", VerifyTask::class.java) { task ->
           task.description = "Verifies that the manifest is up to date for the '$name' source set"
           task.group = "microfilm"
+          task.cwebpDirectory.from(cwebpDirectory)
           task.imageRules.set(extension.imageRules)
           task.microfilmDirectory.set(microfilmDirectory)
           task.resourcesDirectory.set(resourcesDirectory)

@@ -16,25 +16,37 @@
 package xyz.block.microfilm
 
 import java.io.File
+import javax.inject.Inject
 import kotlinx.serialization.json.Json
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
+import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.provider.ListProperty
+import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.Internal
+import org.gradle.api.tasks.PathSensitive
+import org.gradle.api.tasks.PathSensitivity.RELATIVE
 import org.gradle.api.tasks.TaskAction
+import org.gradle.process.ExecOperations
 import org.gradle.work.DisableCachingByDefault
 import xyz.block.microfilm.ImageSettings.Compress
 import xyz.block.microfilm.ImageSettings.Exclude
 
 @DisableCachingByDefault(because = "This task produces no outputs")
-internal abstract class VerifyTask : DefaultTask() {
+internal abstract class VerifyTask @Inject constructor(private val execOperations: ExecOperations) :
+  DefaultTask() {
+  @get:InputFiles
+  @get:PathSensitive(RELATIVE)
+  abstract val cwebpDirectory: ConfigurableFileCollection
+
   @get:Internal abstract val imageRules: ListProperty<ImageRule>
 
   @get:Internal abstract val microfilmDirectory: DirectoryProperty
 
   @get:Internal abstract val resourcesDirectory: DirectoryProperty
 
+  private val cwebp by lazy { Cwebp(execOperations = execOperations, directory = cwebpDirectory) }
   private val microfilmDirectoryFile by lazy { microfilmDirectory.get().asFile }
   private val microfilmManifestFile by lazy { File(microfilmDirectoryFile, "manifest.json") }
   private val resourcesDirectoryFile by lazy { resourcesDirectory.get().asFile }
@@ -137,6 +149,23 @@ internal abstract class VerifyTask : DefaultTask() {
         .filterNot { (resourcesWebp, entry) -> resourcesWebp.sha256() == entry.compressedSha256 }
         .map { (_, entry) ->
           "Incorrect SHA for WebP image in resources directory: ${entry.compressedSha256}"
+        }
+    )
+
+    // Check the compression settings
+    val cwebpVersion = cwebp.getVersion()
+    failures.addAll(
+      manifest.entries
+        .map { entry -> entry to entry.sourcePath.resolveImageSettings() }
+        .filter { (entry, imageSettings) ->
+          when (imageSettings) {
+            is Compress ->
+              entry.compressor != imageSettings.toCompressor(cwebpVersion = cwebpVersion)
+            is Exclude -> true
+          }
+        }
+        .map { (entry, _) ->
+          "Incorrect compression settings for PNG image in microfilm directory: ${entry.sourcePath}"
         }
     )
 
