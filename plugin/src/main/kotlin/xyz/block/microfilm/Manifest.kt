@@ -35,6 +35,7 @@ internal data class Manifest(val entries: List<Entry> = emptyList()) {
     val version: String,
     val lossless: Boolean,
     val compressionFactor: Int?,
+    val metadata: String?,
   )
 }
 
@@ -44,4 +45,5 @@ internal fun ImageSettings.Compress.toCompressor(cwebpVersion: String) =
     version = cwebpVersion,
     lossless = lossless,
     compressionFactor = compressionFactor,
+    metadata = metadata?.toString(),
   )
