@@ -18,7 +18,11 @@ package xyz.block.microfilm
 import org.gradle.api.provider.Property
 
 public sealed interface ImageSettings {
-  public data class Compress(val lossless: Boolean, val compressionFactor: Int?) : ImageSettings {
+  public data class Compress(
+    val lossless: Boolean = false,
+    val compressionFactor: Int? = null,
+    val metadata: ImageMetadata? = null,
+  ) : ImageSettings {
     init {
       if (compressionFactor != null) {
         require(compressionFactor in 0..100) { "compressionFactor must be between 0 and 100" }
@@ -35,7 +39,7 @@ public sealed interface ImageSettings {
       public abstract val lossless: Property<Boolean>
 
       /**
-       * Specify the compression factor for RGB channels between 0 and 100. The default is 75.
+       * Specifies the compression factor for RGB channels between 0 and 100. The default is 75.
        *
        * In case of lossy compression (default), a small factor produces a smaller file with lower
        * quality. Best quality is achieved by using a value of 100.
@@ -49,12 +53,25 @@ public sealed interface ImageSettings {
        */
       public abstract val compressionFactor: Property<Int>
 
+      /**
+       * Specifies the metadata to copy from the source image to the compressed image if present.
+       * The default is none.
+       *
+       * See the cwebp documentation of the -metadata option for more info:
+       * https://developers.google.com/speed/webp/docs/cwebp
+       */
+      public abstract val metadata: Property<ImageMetadata>
+
       init {
         lossless.convention(false)
       }
 
       internal fun resolve(): Compress =
-        Compress(lossless = lossless.get(), compressionFactor = compressionFactor.orNull)
+        Compress(
+          lossless = lossless.get(),
+          compressionFactor = compressionFactor.orNull,
+          metadata = metadata.orNull,
+        )
     }
   }
 
