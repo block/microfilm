@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package xyz.block.microfilm.sample.app
+package xyz.block.microfilm.sample
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -30,8 +30,6 @@ import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import xyz.block.microfilm.sample.app.R as AppR
-import xyz.block.microfilm.sample.library.R as LibraryR
 
 class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,18 +41,18 @@ class MainActivity : ComponentActivity() {
           horizontalAlignment = CenterHorizontally,
           verticalArrangement = Arrangement.spacedBy(space = 16.dp, alignment = CenterVertically),
         ) {
-          Text(text = "App Module", style = MaterialTheme.typography.h6)
+          Text(text = "Lossless", style = MaterialTheme.typography.h6)
           Image(
             modifier = Modifier.size(size = 120.dp),
-            painter = painterResource(AppR.drawable.cash_app_green_lossless),
-            contentDescription = "App module sample image",
+            painter = painterResource(R.drawable.cash_app_green_lossless),
+            contentDescription = "Lossless sample image",
           )
 
-          Text(text = "Library Module", style = MaterialTheme.typography.h6)
+          Text(text = "Lossy", style = MaterialTheme.typography.h6)
           Image(
             modifier = Modifier.size(size = 120.dp),
-            painter = painterResource(LibraryR.drawable.cash_app_black_lossy),
-            contentDescription = "Library module sample image",
+            painter = painterResource(R.drawable.cash_app_green_lossy),
+            contentDescription = "Lossy sample image",
           )
         }
       }
