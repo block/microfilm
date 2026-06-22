@@ -53,6 +53,11 @@ internal class Cwebp(
             add(compressionFactor.toString())
           }
 
+          imageSettings.compressionMethod?.let { compressionMethod ->
+            add("-m")
+            add(compressionMethod.toString())
+          }
+
           imageSettings.metadata?.let { metadata ->
             add("-metadata")
             add(metadata.toString())
