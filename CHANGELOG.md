@@ -3,6 +3,19 @@
 ## [Unreleased]
 [Unreleased]: https://github.com/block/microfilm/commits/main
 
+## [0.2.0] - 2023-06-22
+[0.2.0]: https://github.com/cashapp/paraphrase/releases/tag/0.2.0
+
+New:
+
+- Add a parameter for the compression method
+
+Changed:
+
+- Disable explicit nulls for manifest serialization
+- Verify compression settings in addition to image locations and hashes
+- Make the metadata parameter configurable
+
 ## [0.1.0] - 2026-06-09
 [0.1.0]: https://github.com/block/microfilm/releases/tag/0.1.0
 
