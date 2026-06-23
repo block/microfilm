@@ -22,7 +22,7 @@ kotlin { explicitApi() }
 
 gradleTestKitSupport {
   disablePublication()
-  withSupportLibrary()
+  withSupportLibrary("0.26")
   withTruthLibrary()
 }
 

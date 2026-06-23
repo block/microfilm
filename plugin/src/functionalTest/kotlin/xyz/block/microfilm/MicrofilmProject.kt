@@ -17,6 +17,7 @@ package xyz.block.microfilm
 
 import com.autonomousapps.kit.AbstractGradleProject
 import com.autonomousapps.kit.GradleProject
+import com.autonomousapps.kit.gradle.GradleProperties
 import com.autonomousapps.kit.gradle.Plugin
 import com.autonomousapps.kit.gradle.android.AndroidBlock
 import com.autonomousapps.kit.gradle.android.DefaultConfig
@@ -48,6 +49,7 @@ class MicrofilmProject : AbstractGradleProject() {
           this.additions = additions
         }
       }
+      .enableIsolatedProjects()
       .write()
   }
 
@@ -73,12 +75,20 @@ class MicrofilmProject : AbstractGradleProject() {
               .trimIndent() + if (additions.isNotEmpty()) "\n$additions" else ""
         }
       }
+      .enableIsolatedProjects()
       .write()
   }
 
   fun vanilla(microfilmPlugin: Plugin): GradleProject {
     return newGradleProjectBuilder(GradleProject.DslKind.KOTLIN)
       .withRootProject { withBuildScript { plugins(microfilmPlugin) } }
+      .enableIsolatedProjects()
       .write()
   }
+
+  /** Enables Gradle's Isolated Projects feature for the generated build under test. */
+  private fun GradleProject.Builder.enableIsolatedProjects(): GradleProject.Builder =
+    withRootProject {
+      gradleProperties += GradleProperties.enableIsolatedProjects()
+    }
 }
