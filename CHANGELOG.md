@@ -3,6 +3,13 @@
 ## [Unreleased]
 [Unreleased]: https://github.com/block/microfilm/commits/main
 
+## [0.2.1] - 2023-06-23
+[0.2.0]: https://github.com/cashapp/paraphrase/releases/tag/0.2.1
+
+Changed:
+
+- Support isolated projects
+
 ## [0.2.0] - 2023-06-22
 [0.2.0]: https://github.com/cashapp/paraphrase/releases/tag/0.2.0
 
