@@ -150,13 +150,17 @@ class MicrofilmPluginFunctionalTest {
   }
 
   @Test
-  fun `compress task skipped when source set has independent webp image in resources directory`() {
+  fun `compress task fails when source set has independent webp image in resources directory`() {
     val project = androidLibProject()
     WEBP_FIXTURE.copyToDirectory(directory = project.libResourcesDrawableDirectory)
 
-    val result = project.build(":lib:compressMicrofilmMain")
+    val result = GradleBuilder.buildAndFail(project.rootDir, ":lib:compressMicrofilmMain")
 
-    assertThat(result).task(":lib:compressMicrofilmMain").skipped()
+    assertThat(result).task(":lib:compressMicrofilmMain").failed()
+    assertThat(project.libResourcesDrawableDirectory.containsPng()).isFalse()
+    assertThat(project.libResourcesDrawableDirectory.containsWebp()).isTrue()
+    assertThat(project.libMicrofilmDirectory.containsManifest()).isFalse()
+    assertThat(project.libMicrofilmDrawableDirectory.containsPng()).isFalse()
   }
 
   @Test
@@ -311,9 +315,9 @@ class MicrofilmPluginFunctionalTest {
     val project = androidLibProject()
     WEBP_FIXTURE_LOSSY.copyToDirectory(directory = project.libResourcesDrawableDirectory)
 
-    val result = project.build(":lib:verifyMicrofilmMain")
+    val result = GradleBuilder.buildAndFail(project.rootDir, ":lib:verifyMicrofilmMain")
 
-    assertThat(result).task(":lib:verifyMicrofilmMain").skipped()
+    assertThat(result).task(":lib:verifyMicrofilmMain").failed()
   }
 
   @Test

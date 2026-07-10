@@ -34,6 +34,7 @@ import org.gradle.nativeplatform.OperatingSystemFamily.MACOS
 import org.gradle.nativeplatform.OperatingSystemFamily.OPERATING_SYSTEM_ATTRIBUTE
 import xyz.block.microfilm.compression.CompressTask
 import xyz.block.microfilm.cwebp.ExtractCwebpBinary
+import xyz.block.microfilm.verification.VerifyTask
 
 public class MicrofilmPlugin : Plugin<Project> {
   override fun apply(target: Project): Unit = target.run {
@@ -140,7 +141,8 @@ public class MicrofilmPlugin : Plugin<Project> {
       fun hasMicrofilmContent() =
         microfilmDirectory.asFile.containsPngDrawables() ||
           microfilmManifest.asFile.exists() ||
-          resourcesDirectory.asFile.containsPngDrawables()
+          resourcesDirectory.asFile.containsPngDrawables() ||
+          resourcesDirectory.asFile.containsWebpDrawables()
       val compressSourceSet =
         tasks.register("compressMicrofilm$nameCapitalized", CompressTask::class.java) { task ->
           task.description = "Compresses source images for the '$name' source set"
@@ -177,6 +179,8 @@ public class MicrofilmPlugin : Plugin<Project> {
 }
 
 private fun File.containsPngDrawables() = walk().any { file -> file.isPngDrawable }
+
+private fun File.containsWebpDrawables() = walk().any { file -> file.isWebpDrawable }
 
 private fun currentOperatingSystemFamily(): String {
   val operatingSystem = System.getProperty("os.name").lowercase()
