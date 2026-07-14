@@ -32,6 +32,7 @@ import org.gradle.process.ExecOperations
 import org.gradle.work.DisableCachingByDefault
 import xyz.block.microfilm.ImageSettings.Compress
 import xyz.block.microfilm.ImageSettings.Exclude
+import xyz.block.microfilm.ImageSettings.Unspecified
 import xyz.block.microfilm.cwebp.RealCwebp
 
 @DisableCachingByDefault(because = "This task produces no outputs")
@@ -162,7 +163,8 @@ internal abstract class VerifyTask @Inject constructor(private val execOperation
           when (imageSettings) {
             is Compress ->
               entry.compressor != imageSettings.toCompressor(cwebpVersion = cwebpVersion)
-            is Exclude -> true
+            is Exclude,
+            is Unspecified -> true
           }
         }
         .map { (entry, _) ->
