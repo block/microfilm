@@ -37,10 +37,12 @@ dependencies {
   compileOnly(libs.agp)
 
   implementation(libs.kotlinx.serialization.json)
+  implementation(libs.okio)
 
   testImplementation(libs.assertk)
   testImplementation(platform(libs.junit.bom))
   testImplementation(libs.junit.jupiter)
+  testImplementation(libs.okio.fakeFileSystem)
   testRuntimeOnly(libs.junit.launcher)
 
   functionalTestImplementation(platform(libs.junit.bom))

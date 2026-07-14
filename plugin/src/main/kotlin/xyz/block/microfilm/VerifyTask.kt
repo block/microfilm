@@ -32,6 +32,7 @@ import org.gradle.process.ExecOperations
 import org.gradle.work.DisableCachingByDefault
 import xyz.block.microfilm.ImageSettings.Compress
 import xyz.block.microfilm.ImageSettings.Exclude
+import xyz.block.microfilm.cwebp.RealCwebp
 
 @DisableCachingByDefault(because = "This task produces no outputs")
 internal abstract class VerifyTask @Inject constructor(private val execOperations: ExecOperations) :
@@ -46,13 +47,13 @@ internal abstract class VerifyTask @Inject constructor(private val execOperation
 
   @get:Internal abstract val resourcesDirectory: DirectoryProperty
 
-  private val cwebp by lazy { Cwebp(execOperations = execOperations, directory = cwebpDirectory) }
   private val microfilmDirectoryFile by lazy { microfilmDirectory.get().asFile }
   private val microfilmManifestFile by lazy { File(microfilmDirectoryFile, "manifest.json") }
   private val resourcesDirectoryFile by lazy { resourcesDirectory.get().asFile }
 
   @TaskAction
   fun verify() {
+    val cwebp = RealCwebp(execOperations = execOperations, directory = cwebpDirectory)
     val failures = mutableListOf<String>()
 
     // Collect the images in the manifest

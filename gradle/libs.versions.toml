@@ -3,6 +3,7 @@ agp = "9.2.1"
 cwebp = "1.6.0"
 kotlin = "2.4.10"
 mavenPublish = "0.37.0"
+okio = "3.17.0"
 testkit = "0.19"
 
 [libraries]
@@ -16,6 +17,8 @@ junit-jupiter = { module = "org.junit.jupiter:junit-jupiter" }
 junit-launcher = { module = "org.junit.platform:junit-platform-launcher" }
 kotlinx-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0"
 ktfmt = "com.facebook:ktfmt:0.64"
+okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
+okio-fakeFileSystem = { module = "com.squareup.okio:okio-fakefilesystem", version.ref = "okio" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

@@ -32,6 +32,7 @@ import org.gradle.nativeplatform.OperatingSystemFamily
 import org.gradle.nativeplatform.OperatingSystemFamily.LINUX
 import org.gradle.nativeplatform.OperatingSystemFamily.MACOS
 import org.gradle.nativeplatform.OperatingSystemFamily.OPERATING_SYSTEM_ATTRIBUTE
+import xyz.block.microfilm.cwebp.ExtractCwebpBinary
 
 public class MicrofilmPlugin : Plugin<Project> {
   override fun apply(target: Project): Unit = target.run {
