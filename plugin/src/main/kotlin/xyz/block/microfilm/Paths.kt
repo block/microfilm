@@ -15,7 +15,9 @@
  */
 package xyz.block.microfilm
 
+import kotlin.text.RegexOption.IGNORE_CASE
 import okio.Path
+import okio.Path.Companion.toPath
 
 /** Matches Android drawable resource directories like `drawable` and `drawable-hdpi`. */
 private val DRAWABLE_DIRECTORY_PATTERN = Regex(pattern = "^drawable(-.*)?$")
@@ -39,3 +41,9 @@ internal val Path.isPngDrawable
 /** True if this is a WebP image in a drawable directory. */
 internal val Path.isWebpDrawable
   get() = isInDrawableDirectory && name.endsWith(suffix = ".webp", ignoreCase = true)
+
+/** Returns a new path with the new file extension instead of the old one. */
+internal fun Path.replaceExtension(old: String, new: String) =
+  toString()
+    .replace(regex = Regex(pattern = "\\.$old$", option = IGNORE_CASE), replacement = ".$new")
+    .toPath()

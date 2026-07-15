@@ -17,6 +17,7 @@ package xyz.block.microfilm
 
 import okio.FileSystem
 import okio.Path
+import okio.buffer
 
 /**
  * Returns the results of [listRecursively] if the given directory exists, or an empty sequence if
@@ -28,3 +29,7 @@ internal fun FileSystem.listRecursivelyOrEmpty(dir: Path): Sequence<Path> =
   } else {
     emptySequence()
   }
+
+/** Returns the SHA256 hash of the file at the given path. */
+internal fun FileSystem.sha256(file: Path) =
+  source(file = file).buffer().use { source -> source.readByteString().sha256().hex() }
