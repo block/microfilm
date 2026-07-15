@@ -5,9 +5,11 @@
     'helpers:pinGitHubActionDigests',
   ],
   ignorePresets: [
+    // Ensure we get the latest version and are not pinned to old versions.
     'workarounds:javaLTSVersions',
   ],
   customManagers: [
+    // Update .java-version file with the latest JDK version.
     {
       customType: 'regex',
       managerFilePatterns: [
@@ -18,6 +20,7 @@
       ],
       datasourceTemplate: 'java-version',
       depNameTemplate: 'java',
+      // Only write the major version.
       extractVersionTemplate: '^(?<version>\\d+)',
     },
   ],
