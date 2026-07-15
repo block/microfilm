@@ -1,6 +1,9 @@
 {
-  $schema: "https://docs.renovatebot.com/renovate-schema.json",
-  extends: ["config:recommended", "helpers:pinGitHubActionDigests"],
+  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+  extends: [
+    'config:recommended',
+    'helpers:pinGitHubActionDigests',
+  ],
   ignorePresets: [
     // Ensure we get the latest version and are not pinned to old versions.
     'workarounds:javaLTSVersions',
@@ -9,8 +12,8 @@
     // Update .java-version file with the latest JDK version.
     {
       customType: 'regex',
-      fileMatch: [
-        '\\.java-version$',
+      managerFilePatterns: [
+        '/\\.java-version$/',
       ],
       matchStrings: [
         '(?<currentValue>.*)\\n',
@@ -20,5 +23,5 @@
       // Only write the major version.
       extractVersionTemplate: '^(?<version>\\d+)',
     },
-  ]
+  ],
 }
