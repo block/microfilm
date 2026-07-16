@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package xyz.block.microfilm
+package xyz.block.microfilm.cwebp
 
 import java.util.zip.ZipInputStream
 import org.gradle.api.artifacts.transform.CacheableTransform

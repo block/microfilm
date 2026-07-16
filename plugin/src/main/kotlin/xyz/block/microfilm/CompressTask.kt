@@ -20,6 +20,7 @@ import javax.inject.Inject
 import kotlin.text.RegexOption.IGNORE_CASE
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
+import okio.Path.Companion.toOkioPath
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
@@ -33,6 +34,7 @@ import org.gradle.process.ExecOperations
 import org.gradle.work.DisableCachingByDefault
 import xyz.block.microfilm.ImageSettings.Compress
 import xyz.block.microfilm.ImageSettings.Exclude
+import xyz.block.microfilm.cwebp.RealCwebp
 
 @DisableCachingByDefault(because = "This task modifies the source tree in place")
 internal abstract class CompressTask
@@ -48,13 +50,14 @@ constructor(private val execOperations: ExecOperations) : DefaultTask() {
 
   @get:Internal abstract val resourcesDirectory: DirectoryProperty
 
-  private val cwebp by lazy { Cwebp(execOperations = execOperations, directory = cwebpDirectory) }
   private val microfilmDirectoryFile by lazy { microfilmDirectory.get().asFile }
   private val microfilmManifestFile by lazy { File(microfilmDirectoryFile, "manifest.json") }
   private val resourcesDirectoryFile by lazy { resourcesDirectory.get().asFile }
 
   @TaskAction
   fun compress() {
+    val cwebp = RealCwebp(execOperations = execOperations, directory = cwebpDirectory)
+
     // Find the resources PNGs
     val resourcesPngs = resourcesDirectoryFile.walk().filter { file -> file.isPngDrawable }.toList()
 
@@ -86,8 +89,8 @@ constructor(private val execOperations: ExecOperations) : DefaultTask() {
         resourcesWebp.parentFile?.mkdirs()
         cwebp.compress(
           imageSettings = imageSettings,
-          sourcePng = microfilmPng,
-          destinationWebp = resourcesWebp,
+          sourcePng = microfilmPng.toOkioPath(),
+          destinationWebp = resourcesWebp.toOkioPath(),
         )
       }
 

@@ -13,33 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package xyz.block.microfilm
+package xyz.block.microfilm.cwebp
 
 import java.io.ByteArrayOutputStream
-import java.io.File
 import kotlin.io.resolve
+import okio.Path
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.process.ExecOperations
+import xyz.block.microfilm.ImageSettings.Compress
 
-/** A wrapper around the cwebp executable. */
-internal class Cwebp(
+/** A [Cwebp] backed by [ExecOperations] and a cwebp binary executable. */
+internal class RealCwebp(
   private val execOperations: ExecOperations,
   private val directory: ConfigurableFileCollection,
-) {
+) : Cwebp {
   private val executable by lazy { directory.singleFile.resolve("cwebp") }
-
-  /** Returns the current cweb version. */
-  fun getVersion(): String {
+  private val _version by lazy {
     val output = ByteArrayOutputStream()
     execOperations.exec { action ->
       action.commandLine(executable.absolutePath, "-version")
       action.standardOutput = output
     }
-    return output.toString().lines().first().trim()
+    output.toString().lines().first().trim()
   }
 
-  /** Compresses the source PNG image to the destination WebP using the given settings. */
-  fun compress(imageSettings: ImageSettings.Compress, sourcePng: File, destinationWebp: File) {
+  override fun getVersion(): String = _version
+
+  override fun compress(imageSettings: Compress, sourcePng: Path, destinationWebp: Path) {
     execOperations.exec { action ->
       action.commandLine(
         buildList {
@@ -64,8 +64,8 @@ internal class Cwebp(
           }
 
           add("-o")
-          add(destinationWebp.absolutePath)
-          add(sourcePng.absolutePath)
+          add(destinationWebp.toString())
+          add(sourcePng.toString())
         }
       )
     }
