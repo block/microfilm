@@ -16,10 +16,14 @@
 package xyz.block.microfilm
 
 import assertk.assertThat
+import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
 import assertk.assertions.isTrue
 import okio.Path.Companion.toPath
 import org.junit.jupiter.api.Test
+import xyz.block.microfilm.ImageGroupFixtures.RESOURCES_DIRECTORY
+import xyz.block.microfilm.ImageGroupFixtures.RESOURCES_PNG
+import xyz.block.microfilm.ImageGroupFixtures.RESOURCES_WEBP
 
 class PathsTest {
   @Test
@@ -92,5 +96,26 @@ class PathsTest {
   @Test
   fun `isWebpDrawable is false for directory in drawable directory`() {
     assertThat("src/main/res/drawable/nested".toPath().isWebpDrawable).isFalse()
+  }
+
+  @Test
+  fun `replaceExtension converts from png to webp`() {
+    assertThat(RESOURCES_PNG.replaceExtension(old = "png", new = "webp")).isEqualTo(RESOURCES_WEBP)
+  }
+
+  @Test
+  fun `replaceExtension converts from webp to png`() {
+    assertThat(RESOURCES_WEBP.replaceExtension(old = "webp", new = "png")).isEqualTo(RESOURCES_PNG)
+  }
+
+  @Test
+  fun `replaceExtension skips mismatched extension`() {
+    assertThat(RESOURCES_PNG.replaceExtension(old = "webp", new = "png")).isEqualTo(RESOURCES_PNG)
+  }
+
+  @Test
+  fun `replaceExtension skips directory`() {
+    assertThat(RESOURCES_DIRECTORY.replaceExtension(old = "png", new = "webp"))
+      .isEqualTo(RESOURCES_DIRECTORY)
   }
 }
