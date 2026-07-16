@@ -4,6 +4,11 @@
     'config:recommended',
     'helpers:pinGitHubActionDigests',
   ],
+  // The org-inherited config (block/renovate-config) sets `prCreation: "not-pending"`,
+  // which holds a PR open until the branch's status checks complete. Our CI workflows
+  // only run on `pull_request` (not on pushes to renovate/* branches), so branches never
+  // get checks and the PRs never open. Create PRs immediately so CI can run on them.
+  prCreation: 'immediate',
   ignorePresets: [
     // Ensure we get the latest version and are not pinned to old versions.
     'workarounds:javaLTSVersions',
