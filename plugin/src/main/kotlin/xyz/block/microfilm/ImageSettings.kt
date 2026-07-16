@@ -18,6 +18,7 @@ package xyz.block.microfilm
 import org.gradle.api.provider.Property
 
 public sealed interface ImageSettings {
+  /** The settings for images that are targeted by a compress rule in the Gradle configuration. */
   public data class Compress(
     val lossless: Boolean = false,
     val compressionFactor: Int? = null,
@@ -89,5 +90,12 @@ public sealed interface ImageSettings {
     }
   }
 
+  /** The settings for images that are targeted by an exclude rule in the Gradle configuration. */
   public data object Exclude : ImageSettings
+
+  /**
+   * The settings for images that are not targeted by neither a compress nor an exclude rule in the
+   * Gradle configuration.
+   */
+  public data object Unspecified : ImageSettings
 }

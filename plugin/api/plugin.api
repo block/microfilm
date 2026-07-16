@@ -50,6 +50,13 @@ public final class xyz/block/microfilm/ImageSettings$Exclude : xyz/block/microfi
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class xyz/block/microfilm/ImageSettings$Unspecified : xyz/block/microfilm/ImageSettings {
+	public static final field INSTANCE Lxyz/block/microfilm/ImageSettings$Unspecified;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public abstract class xyz/block/microfilm/MicrofilmExtension {
 	public fun <init> ()V
 	public final fun compress (Ljava/lang/String;Lorg/gradle/api/Action;)V
