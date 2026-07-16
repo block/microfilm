@@ -21,6 +21,6 @@ internal class FakeScanner : Scanner {
 
   override fun scan(): List<ImageGroup> {
     scanRequests.add(Unit)
-    return scanResponses.firstOrNull() ?: emptyList()
+    return scanResponses.removeFirstOrNull() ?: emptyList()
   }
 }
