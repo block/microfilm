@@ -21,9 +21,9 @@ import assertk.assertions.isFalse
 import assertk.assertions.isTrue
 import okio.Path.Companion.toPath
 import org.junit.jupiter.api.Test
-import xyz.block.microfilm.ImageGroupFixtures.RESOURCES_DIRECTORY
-import xyz.block.microfilm.ImageGroupFixtures.RESOURCES_PNG
-import xyz.block.microfilm.ImageGroupFixtures.RESOURCES_WEBP
+import xyz.block.microfilm.scanning.ImageGroupFixtures.RESOURCES_DIRECTORY
+import xyz.block.microfilm.scanning.ImageGroupFixtures.RESOURCES_PNG
+import xyz.block.microfilm.scanning.ImageGroupFixtures.RESOURCES_WEBP
 
 class PathsTest {
   @Test

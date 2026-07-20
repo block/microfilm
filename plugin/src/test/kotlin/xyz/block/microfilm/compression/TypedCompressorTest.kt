@@ -19,11 +19,11 @@ import assertk.assertThat
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import org.junit.jupiter.api.Test
-import xyz.block.microfilm.ImageGroupFixtures.LOSSY_COMPRESS
-import xyz.block.microfilm.ImageGroupFixtures.LOSSY_IMAGE_GROUP
 import xyz.block.microfilm.ImageSettings.Compress
 import xyz.block.microfilm.ImageSettings.Exclude
 import xyz.block.microfilm.ImageSettings.Unspecified
+import xyz.block.microfilm.scanning.ImageGroupFixtures.LOSSY_COMPRESS
+import xyz.block.microfilm.scanning.ImageGroupFixtures.LOSSY_IMAGE_GROUP
 
 class TypedCompressorTest {
   private val compressCompressor = FakeCompressor<Compress>()

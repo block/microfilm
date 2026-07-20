@@ -25,21 +25,21 @@ import okio.ByteString.Companion.encodeUtf8
 import okio.fakefilesystem.FakeFileSystem
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
-import xyz.block.microfilm.ImageGroupFixtures.EMPTY_IMAGE_GROUP
-import xyz.block.microfilm.ImageGroupFixtures.LOSSLESS_COMPRESS
-import xyz.block.microfilm.ImageGroupFixtures.LOSSLESS_MANIFEST_ENTRY
-import xyz.block.microfilm.ImageGroupFixtures.LOSSY_COMPRESS
-import xyz.block.microfilm.ImageGroupFixtures.LOSSY_IMAGE_GROUP
-import xyz.block.microfilm.ImageGroupFixtures.LOSSY_MANIFEST_ENTRY
-import xyz.block.microfilm.ImageGroupFixtures.MICROFILM_DIRECTORY
-import xyz.block.microfilm.ImageGroupFixtures.MICROFILM_PNG
-import xyz.block.microfilm.ImageGroupFixtures.PNG_CONTENT
-import xyz.block.microfilm.ImageGroupFixtures.RESOURCES_DIRECTORY
-import xyz.block.microfilm.ImageGroupFixtures.RESOURCES_PNG
-import xyz.block.microfilm.ImageGroupFixtures.RESOURCES_WEBP
-import xyz.block.microfilm.ImageGroupFixtures.WEBP_CONTENT
 import xyz.block.microfilm.compression.Compressor.Result.Success
 import xyz.block.microfilm.cwebp.FakeCwebp
+import xyz.block.microfilm.scanning.ImageGroupFixtures.EMPTY_IMAGE_GROUP
+import xyz.block.microfilm.scanning.ImageGroupFixtures.LOSSLESS_COMPRESS
+import xyz.block.microfilm.scanning.ImageGroupFixtures.LOSSLESS_MANIFEST_ENTRY
+import xyz.block.microfilm.scanning.ImageGroupFixtures.LOSSY_COMPRESS
+import xyz.block.microfilm.scanning.ImageGroupFixtures.LOSSY_IMAGE_GROUP
+import xyz.block.microfilm.scanning.ImageGroupFixtures.LOSSY_MANIFEST_ENTRY
+import xyz.block.microfilm.scanning.ImageGroupFixtures.MICROFILM_DIRECTORY
+import xyz.block.microfilm.scanning.ImageGroupFixtures.MICROFILM_PNG
+import xyz.block.microfilm.scanning.ImageGroupFixtures.PNG_CONTENT
+import xyz.block.microfilm.scanning.ImageGroupFixtures.RESOURCES_DIRECTORY
+import xyz.block.microfilm.scanning.ImageGroupFixtures.RESOURCES_PNG
+import xyz.block.microfilm.scanning.ImageGroupFixtures.RESOURCES_WEBP
+import xyz.block.microfilm.scanning.ImageGroupFixtures.WEBP_CONTENT
 
 class CompressCompressorTest {
   private val fileSystem =
