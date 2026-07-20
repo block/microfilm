@@ -29,3 +29,7 @@ internal fun ImageRule.matches(imagePath: String): Boolean =
 internal fun List<ImageRule>.resolve(imagePath: String): ImageRule? = lastOrNull { imageRule ->
   imageRule.matches(imagePath)
 }
+
+/** Returns the last [ImageRule] that matches the given image, or null if none match. */
+internal fun List<ImageRule>.resolve(imagePath: okio.Path): ImageRule? =
+  resolve(imagePath = imagePath.toString())

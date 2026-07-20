@@ -20,6 +20,7 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
 import assertk.assertions.isNull
 import assertk.assertions.isTrue
+import okio.Path.Companion.toPath
 import org.junit.jupiter.api.Test
 
 class ImageRuleTest {
@@ -57,7 +58,9 @@ class ImageRuleTest {
     val hdpi = ImageRule(pattern = "drawable-hdpi/**")
     val imageRules = listOf(fallback, mdpi, hdpi)
 
-    assertThat(imageRules.resolve(imagePath = "drawable-mdpi/photo.png")).isEqualTo(mdpi)
+    val imagePath = "drawable-mdpi/photo.png"
+    assertThat(imageRules.resolve(imagePath = imagePath)).isEqualTo(mdpi)
+    assertThat(imageRules.resolve(imagePath = imagePath.toPath())).isEqualTo(mdpi)
   }
 
   @Test
@@ -67,7 +70,9 @@ class ImageRuleTest {
     val hdpi = ImageRule(pattern = "drawable-hdpi/**")
     val imageRules = listOf(fallback, mdpi, hdpi)
 
-    assertThat(imageRules.resolve(imagePath = "drawable-xhdpi/photo.png")).isEqualTo(fallback)
+    val imagePath = "drawable-xhdpi/photo.png"
+    assertThat(imageRules.resolve(imagePath = imagePath)).isEqualTo(fallback)
+    assertThat(imageRules.resolve(imagePath = imagePath.toPath())).isEqualTo(fallback)
   }
 
   @Test
@@ -76,7 +81,9 @@ class ImageRuleTest {
     val hdpi = ImageRule(pattern = "drawable-hdpi/**")
     val imageRules = listOf(mdpi, hdpi)
 
-    assertThat(imageRules.resolve(imagePath = "drawable-xhdpi/photo.png")).isNull()
+    val imagePath = "drawable-xhdpi/photo.png"
+    assertThat(imageRules.resolve(imagePath = imagePath)).isNull()
+    assertThat(imageRules.resolve(imagePath = imagePath.toPath())).isNull()
   }
 
   private fun ImageRule(pattern: String) =

@@ -15,9 +15,17 @@
  */
 package xyz.block.microfilm.compression
 
+import okio.Path
+import okio.Path.Companion.toPath
+import xyz.block.microfilm.ImageRule
 import xyz.block.microfilm.ImageSettings
+import xyz.block.microfilm.ImageSettings.Exclude
+import xyz.block.microfilm.ImageSettings.Unspecified
 import xyz.block.microfilm.Manifest
+import xyz.block.microfilm.compression.Compressor.Result
+import xyz.block.microfilm.resolve
 import xyz.block.microfilm.scanning.ImageGroup
+import xyz.block.microfilm.scanning.Scanner
 
 /**
  * A compressor that compresses images according to the image settings declared in the Gradle
@@ -38,5 +46,31 @@ internal interface Compressor<T : ImageSettings> {
     sealed interface Failure : Result {
       val description: String
     }
+  }
+}
+
+/** Scans for images, pairs them with rules from the Gradle configuration, and compresses them. */
+internal fun Compressor<ImageSettings>.compress(
+  scanner: Scanner,
+  imageRules: List<ImageRule>,
+  resourcesDirectory: Path,
+  microfilmDirectory: Path,
+): List<Result> {
+  return scanner.scan().map { imageGroup ->
+    val pngPath =
+      imageGroup.microfilmManifestEntry?.sourcePath?.toPath()
+        ?: imageGroup.microfilmPng?.relativeTo(other = microfilmDirectory)
+        ?: imageGroup.resourcesPng?.relativeTo(other = resourcesDirectory)
+    val webpPath = imageGroup.resourcesWebp?.relativeTo(other = resourcesDirectory)
+    val imageSettings =
+      when {
+        pngPath != null -> imageRules.resolve(imagePath = pngPath)?.imageSettings
+
+        webpPath != null ->
+          imageRules.resolve(imagePath = webpPath)?.imageSettings?.takeIf { it is Exclude }
+
+        else -> null
+      } ?: Unspecified
+    compress(imageGroup = imageGroup, imageSettings = imageSettings)
   }
 }
