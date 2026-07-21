@@ -23,9 +23,9 @@ import okio.ByteString.Companion.encodeUtf8
 import okio.Path.Companion.toPath
 import okio.fakefilesystem.FakeFileSystem
 import org.junit.jupiter.api.Test
-import xyz.block.microfilm.ImageGroupFixtures.PNG_CONTENT
-import xyz.block.microfilm.ImageGroupFixtures.PNG_HASH
-import xyz.block.microfilm.ImageGroupFixtures.WEBP_CONTENT
+import xyz.block.microfilm.scanning.ImageGroupFixtures.PNG_CONTENT
+import xyz.block.microfilm.scanning.ImageGroupFixtures.PNG_HASH
+import xyz.block.microfilm.scanning.ImageGroupFixtures.WEBP_CONTENT
 
 class FileSystemsTest {
   val fileSystem =

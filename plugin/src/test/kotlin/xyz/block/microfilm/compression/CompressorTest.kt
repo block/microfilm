@@ -18,20 +18,20 @@ package xyz.block.microfilm.compression
 import assertk.assertThat
 import assertk.assertions.containsExactly
 import org.junit.jupiter.api.Test
-import xyz.block.microfilm.ImageGroupFixtures.EMPTY_IMAGE_GROUP
-import xyz.block.microfilm.ImageGroupFixtures.LOSSY_COMPRESS
-import xyz.block.microfilm.ImageGroupFixtures.LOSSY_MANIFEST_ENTRY
-import xyz.block.microfilm.ImageGroupFixtures.MICROFILM_DIRECTORY
-import xyz.block.microfilm.ImageGroupFixtures.MICROFILM_PNG
-import xyz.block.microfilm.ImageGroupFixtures.RESOURCES_DIRECTORY
-import xyz.block.microfilm.ImageGroupFixtures.RESOURCES_PNG
-import xyz.block.microfilm.ImageGroupFixtures.RESOURCES_WEBP
 import xyz.block.microfilm.ImageRule
 import xyz.block.microfilm.ImageSettings
 import xyz.block.microfilm.ImageSettings.Exclude
 import xyz.block.microfilm.ImageSettings.Unspecified
 import xyz.block.microfilm.scanning.FakeScanner
 import xyz.block.microfilm.scanning.ImageGroup
+import xyz.block.microfilm.scanning.ImageGroupFixtures.EMPTY_IMAGE_GROUP
+import xyz.block.microfilm.scanning.ImageGroupFixtures.LOSSY_COMPRESS
+import xyz.block.microfilm.scanning.ImageGroupFixtures.LOSSY_MANIFEST_ENTRY
+import xyz.block.microfilm.scanning.ImageGroupFixtures.MICROFILM_DIRECTORY
+import xyz.block.microfilm.scanning.ImageGroupFixtures.MICROFILM_PNG
+import xyz.block.microfilm.scanning.ImageGroupFixtures.RESOURCES_DIRECTORY
+import xyz.block.microfilm.scanning.ImageGroupFixtures.RESOURCES_PNG
+import xyz.block.microfilm.scanning.ImageGroupFixtures.RESOURCES_WEBP
 
 class CompressorTest {
   @Test

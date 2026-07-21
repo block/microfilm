@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package xyz.block.microfilm
+package xyz.block.microfilm.scanning
 
 import okio.Path.Companion.toPath
 import xyz.block.microfilm.ImageSettings.Compress
+import xyz.block.microfilm.Manifest
 import xyz.block.microfilm.cwebp.FakeCwebp
-import xyz.block.microfilm.scanning.ImageGroup
+import xyz.block.microfilm.toCompressor
 
 internal object ImageGroupFixtures {
   const val KEY = "drawable/photo"

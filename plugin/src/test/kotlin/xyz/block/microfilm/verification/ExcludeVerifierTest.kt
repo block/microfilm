@@ -21,13 +21,13 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
 import assertk.assertions.prop
 import org.junit.jupiter.api.Test
-import xyz.block.microfilm.ImageGroupFixtures.EMPTY_IMAGE_GROUP
-import xyz.block.microfilm.ImageGroupFixtures.KEY
-import xyz.block.microfilm.ImageGroupFixtures.LOSSY_MANIFEST_ENTRY
-import xyz.block.microfilm.ImageGroupFixtures.MICROFILM_PNG
-import xyz.block.microfilm.ImageGroupFixtures.RESOURCES_PNG
-import xyz.block.microfilm.ImageGroupFixtures.RESOURCES_WEBP
 import xyz.block.microfilm.ImageSettings.Exclude
+import xyz.block.microfilm.scanning.ImageGroupFixtures.EMPTY_IMAGE_GROUP
+import xyz.block.microfilm.scanning.ImageGroupFixtures.KEY
+import xyz.block.microfilm.scanning.ImageGroupFixtures.LOSSY_MANIFEST_ENTRY
+import xyz.block.microfilm.scanning.ImageGroupFixtures.MICROFILM_PNG
+import xyz.block.microfilm.scanning.ImageGroupFixtures.RESOURCES_PNG
+import xyz.block.microfilm.scanning.ImageGroupFixtures.RESOURCES_WEBP
 import xyz.block.microfilm.verification.ExcludeVerifier.Failure
 import xyz.block.microfilm.verification.Verifier.Result.Success
 

@@ -23,17 +23,17 @@ import okio.ByteString.Companion.encodeUtf8
 import okio.fakefilesystem.FakeFileSystem
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
-import xyz.block.microfilm.ImageGroupFixtures.EMPTY_IMAGE_GROUP
-import xyz.block.microfilm.ImageGroupFixtures.KEY
-import xyz.block.microfilm.ImageGroupFixtures.LOSSY_MANIFEST_ENTRY
-import xyz.block.microfilm.ImageGroupFixtures.MICROFILM_DIRECTORY
-import xyz.block.microfilm.ImageGroupFixtures.MICROFILM_PNG
-import xyz.block.microfilm.ImageGroupFixtures.PNG_CONTENT
-import xyz.block.microfilm.ImageGroupFixtures.RESOURCES_DIRECTORY
-import xyz.block.microfilm.ImageGroupFixtures.RESOURCES_PNG
-import xyz.block.microfilm.ImageGroupFixtures.RESOURCES_WEBP
-import xyz.block.microfilm.ImageGroupFixtures.WEBP_CONTENT
 import xyz.block.microfilm.Manifest
+import xyz.block.microfilm.scanning.ImageGroupFixtures.EMPTY_IMAGE_GROUP
+import xyz.block.microfilm.scanning.ImageGroupFixtures.KEY
+import xyz.block.microfilm.scanning.ImageGroupFixtures.LOSSY_MANIFEST_ENTRY
+import xyz.block.microfilm.scanning.ImageGroupFixtures.MICROFILM_DIRECTORY
+import xyz.block.microfilm.scanning.ImageGroupFixtures.MICROFILM_PNG
+import xyz.block.microfilm.scanning.ImageGroupFixtures.PNG_CONTENT
+import xyz.block.microfilm.scanning.ImageGroupFixtures.RESOURCES_DIRECTORY
+import xyz.block.microfilm.scanning.ImageGroupFixtures.RESOURCES_PNG
+import xyz.block.microfilm.scanning.ImageGroupFixtures.RESOURCES_WEBP
+import xyz.block.microfilm.scanning.ImageGroupFixtures.WEBP_CONTENT
 
 class RealScannerTest {
   private val fileSystem =
