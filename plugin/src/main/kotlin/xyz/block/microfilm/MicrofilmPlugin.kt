@@ -16,7 +16,9 @@
 package xyz.block.microfilm
 
 import com.android.build.api.dsl.CommonExtension
-import java.io.File
+import okio.FileSystem
+import okio.Path
+import okio.Path.Companion.toOkioPath
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.type.ArtifactTypeDefinition.ARTIFACT_TYPE_ATTRIBUTE
@@ -37,6 +39,8 @@ import xyz.block.microfilm.cwebp.ExtractCwebpBinary
 import xyz.block.microfilm.verification.VerifyTask
 
 public class MicrofilmPlugin : Plugin<Project> {
+  private val fileSystem = FileSystem.SYSTEM
+
   override fun apply(target: Project): Unit = target.run {
     // Configure the extension
     val extension = extensions.create("microfilm", MicrofilmExtension::class.java)
@@ -139,10 +143,10 @@ public class MicrofilmPlugin : Plugin<Project> {
       val microfilmManifest = microfilmDirectory.file("manifest.json")
       val resourcesDirectory = layout.projectDirectory.dir("src/$name/res")
       fun hasMicrofilmContent() =
-        microfilmDirectory.asFile.containsPngDrawables() ||
-          microfilmManifest.asFile.exists() ||
-          resourcesDirectory.asFile.containsPngDrawables() ||
-          resourcesDirectory.asFile.containsWebpDrawables()
+        microfilmDirectory.asFile.toOkioPath().containsPngDrawables() ||
+          fileSystem.exists(path = microfilmManifest.asFile.toOkioPath()) ||
+          resourcesDirectory.asFile.toOkioPath().containsPngDrawables() ||
+          resourcesDirectory.asFile.toOkioPath().containsWebpDrawables()
       val compressSourceSet =
         tasks.register("compressMicrofilm$nameCapitalized", CompressTask::class.java) { task ->
           task.description = "Compresses source images for the '$name' source set"
@@ -171,16 +175,24 @@ public class MicrofilmPlugin : Plugin<Project> {
     }
   }
 
+  private fun Path.containsPngDrawables() =
+    fileSystem
+      .listRecursivelyOrEmpty(dir = this)
+      .filter { path -> path.isPngDrawable }
+      .any { path -> fileSystem.metadata(path = path).isRegularFile }
+
+  private fun Path.containsWebpDrawables() =
+    fileSystem
+      .listRecursivelyOrEmpty(dir = this)
+      .filter { path -> path.isWebpDrawable }
+      .any { path -> fileSystem.metadata(path = path).isRegularFile }
+
   private companion object {
     private const val CWEBP_BINARY_TYPE = "cwebp-binary"
     private const val PLUGIN_ID_APPLICATION = "com.android.application"
     private const val PLUGIN_ID_LIBRARY = "com.android.library"
   }
 }
-
-private fun File.containsPngDrawables() = walk().any { file -> file.isPngDrawable }
-
-private fun File.containsWebpDrawables() = walk().any { file -> file.isWebpDrawable }
 
 private fun currentOperatingSystemFamily(): String {
   val operatingSystem = System.getProperty("os.name").lowercase()
