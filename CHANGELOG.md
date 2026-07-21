@@ -3,8 +3,16 @@
 ## [Unreleased]
 [Unreleased]: https://github.com/block/microfilm/commits/main
 
+## [0.3.0] - 2023-07-21
+[0.3.0]: https://github.com/cashapp/paraphrase/releases/tag/0.3.0
+
+Changed:
+
+- Skip compressing images that are already up-to-date
+- Start reporting errors for resource images not covered by a compress or an exclude rule
+
 ## [0.2.1] - 2023-06-23
-[0.2.0]: https://github.com/cashapp/paraphrase/releases/tag/0.2.1
+[0.2.1]: https://github.com/cashapp/paraphrase/releases/tag/0.2.1
 
 Changed:
 
