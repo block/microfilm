@@ -21,10 +21,12 @@ import xyz.block.microfilm.ImageRule
 import xyz.block.microfilm.ImageSettings
 import xyz.block.microfilm.ImageSettings.Exclude
 import xyz.block.microfilm.ImageSettings.Unspecified
+import xyz.block.microfilm.matchesGlobs
 import xyz.block.microfilm.resolve
 import xyz.block.microfilm.scanning.ImageGroup
 import xyz.block.microfilm.scanning.Scanner
 import xyz.block.microfilm.verification.Verifier.Result
+import xyz.block.microfilm.verification.Verifier.Result.Success
 
 /**
  * A verifier that checks images against the image settings declared in the Gradle configuration.
@@ -54,6 +56,7 @@ internal interface Verifier<T : ImageSettings> {
  */
 internal fun Verifier<ImageSettings>.verify(
   scanner: Scanner,
+  imagePatterns: List<String>,
   imageRules: List<ImageRule>,
   resourcesDirectory: Path,
   microfilmDirectory: Path,
@@ -73,6 +76,10 @@ internal fun Verifier<ImageSettings>.verify(
 
         else -> null
       } ?: Unspecified
-    verify(imageGroup = imageGroup, imageSettings = imageSettings)
+    if (listOfNotNull(pngPath, webpPath).matchesGlobs(patterns = imagePatterns)) {
+      verify(imageGroup = imageGroup, imageSettings = imageSettings)
+    } else {
+      Success(key = imageGroup.key)
+    }
   }
 }
