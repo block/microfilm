@@ -30,6 +30,7 @@ import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity.RELATIVE
 import org.gradle.api.tasks.TaskAction
+import org.gradle.api.tasks.options.Option
 import org.gradle.process.ExecOperations
 import org.gradle.work.DisableCachingByDefault
 import xyz.block.microfilm.ImageRule
@@ -46,6 +47,14 @@ constructor(private val execOperations: ExecOperations) : DefaultTask() {
   @get:InputFiles
   @get:PathSensitive(RELATIVE)
   abstract val cwebpDirectory: ConfigurableFileCollection
+
+  @get:Internal
+  @get:Option(
+    option = "images",
+    description =
+      "Compress the images matching these glob patterns, relative to the res directory.",
+  )
+  abstract val imagePatterns: ListProperty<String>
 
   @get:Internal abstract val imageRules: ListProperty<ImageRule>
 
@@ -97,6 +106,7 @@ constructor(private val execOperations: ExecOperations) : DefaultTask() {
     val results =
       compressor.compress(
         scanner = scanner,
+        imagePatterns = imagePatterns.get().ifEmpty { listOf("**") },
         imageRules = imageRules.get(),
         resourcesDirectory = resourcesDirectoryPath,
         microfilmDirectory = microfilmDirectoryPath,
