@@ -240,6 +240,27 @@ class MicrofilmPluginFunctionalTest {
   }
 
   @Test
+  fun `compress task succeeds when image pattern is provided`() {
+    val project = androidLibProject()
+    PNG_FIXTURE.copyToDirectory(directory = project.libResourcesDrawableDirectory)
+    PNG_FIXTURE.copyToDirectory(
+      directory = project.libResourcesDrawableDirectory,
+      name = PNG_LOSSY_NAME,
+    )
+
+    val result = project.build(":lib:compressMicrofilm", "--images=**/$PNG_NAME")
+
+    assertThat(result).task(":lib:compressMicrofilm").succeeded()
+    assertThat(project.libResourcesDrawableDirectory.containsPng()).isFalse()
+    assertThat(project.libResourcesDrawableDirectory.containsWebp()).isTrue()
+    assertThat(project.libResourcesDrawableDirectory.containsFile(PNG_LOSSY_NAME)).isTrue()
+    assertThat(project.libResourcesDrawableDirectory.containsFile(WEBP_LOSSY_NAME)).isFalse()
+    assertThat(project.libMicrofilmDirectory.containsManifest()).isTrue()
+    assertThat(project.libMicrofilmDrawableDirectory.containsPng()).isTrue()
+    assertThat(project.libMicrofilmDrawableDirectory.containsFile(PNG_LOSSY_NAME)).isFalse()
+  }
+
+  @Test
   fun `compress task is compatible with configuration cache`() {
     val project = androidLibProject()
     PNG_FIXTURE.copyToDirectory(directory = project.libResourcesDrawableDirectory)
@@ -330,6 +351,28 @@ class MicrofilmPluginFunctionalTest {
     assertThat(project.libResourcesDrawableDirectory.containsWebp()).isTrue()
     assertThat(project.libMicrofilmDirectory.containsManifest()).isFalse()
     assertThat(project.libMicrofilmDrawableDirectory.containsPng()).isFalse()
+  }
+
+  @Test
+  fun `decompress task succeeds when image pattern is provided`() {
+    val project = androidLibProject()
+    PNG_FIXTURE.copyToDirectory(directory = project.libResourcesDrawableDirectory)
+    PNG_FIXTURE.copyToDirectory(
+      directory = project.libResourcesDrawableDirectory,
+      name = PNG_LOSSY_NAME,
+    )
+
+    project.build(":lib:compressMicrofilm")
+    val result = project.build(":lib:decompressMicrofilm", "--images=**/$PNG_LOSSY_NAME")
+
+    assertThat(result).task(":lib:decompressMicrofilm").succeeded()
+    assertThat(project.libResourcesDrawableDirectory.containsPng()).isFalse()
+    assertThat(project.libResourcesDrawableDirectory.containsWebp()).isTrue()
+    assertThat(project.libResourcesDrawableDirectory.containsFile(PNG_LOSSY_NAME)).isTrue()
+    assertThat(project.libResourcesDrawableDirectory.containsFile(WEBP_LOSSY_NAME)).isFalse()
+    assertThat(project.libMicrofilmDirectory.containsManifest()).isTrue()
+    assertThat(project.libMicrofilmDrawableDirectory.containsPng()).isTrue()
+    assertThat(project.libMicrofilmDrawableDirectory.containsFile(PNG_LOSSY_NAME)).isFalse()
   }
 
   @Test
@@ -468,6 +511,22 @@ class MicrofilmPluginFunctionalTest {
     val result = GradleBuilder.buildAndFail(project.rootDir, ":lib:verifyMicrofilmMain")
 
     assertThat(result).task(":lib:verifyMicrofilmMain").failed()
+  }
+
+  @Test
+  fun `verify task succeeds when image pattern is provided`() {
+    val project = androidLibProject()
+    MANIFEST_FIXTURE.copyToDirectory(directory = project.libMicrofilmDirectory)
+    PNG_FIXTURE.copyToDirectory(directory = project.libMicrofilmDrawableDirectory)
+    PNG_FIXTURE.copyToDirectory(
+      directory = project.libResourcesDrawableDirectory,
+      name = PNG_LOSSY_NAME,
+    )
+    WEBP_FIXTURE.copyToDirectory(directory = project.libResourcesDrawableDirectory)
+
+    val result = project.build(":lib:verifyMicrofilm", "--images=**/$PNG_NAME")
+
+    assertThat(result).task(":lib:verifyMicrofilm").succeeded()
   }
 
   @Test
