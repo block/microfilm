@@ -17,6 +17,7 @@ package xyz.block.microfilm.compression
 
 import assertk.assertThat
 import assertk.assertions.containsExactly
+import assertk.assertions.isEmpty
 import org.junit.jupiter.api.Test
 import xyz.block.microfilm.ImageRule
 import xyz.block.microfilm.ImageSettings
@@ -26,9 +27,12 @@ import xyz.block.microfilm.scanning.FakeScanner
 import xyz.block.microfilm.scanning.ImageGroup
 import xyz.block.microfilm.scanning.ImageGroupFixtures.EMPTY_IMAGE_GROUP
 import xyz.block.microfilm.scanning.ImageGroupFixtures.LOSSY_COMPRESS
+import xyz.block.microfilm.scanning.ImageGroupFixtures.LOSSY_IMAGE_GROUP
 import xyz.block.microfilm.scanning.ImageGroupFixtures.LOSSY_MANIFEST_ENTRY
 import xyz.block.microfilm.scanning.ImageGroupFixtures.MICROFILM_DIRECTORY
 import xyz.block.microfilm.scanning.ImageGroupFixtures.MICROFILM_PNG
+import xyz.block.microfilm.scanning.ImageGroupFixtures.RELATIVE_PNG
+import xyz.block.microfilm.scanning.ImageGroupFixtures.RELATIVE_WEBP
 import xyz.block.microfilm.scanning.ImageGroupFixtures.RESOURCES_DIRECTORY
 import xyz.block.microfilm.scanning.ImageGroupFixtures.RESOURCES_PNG
 import xyz.block.microfilm.scanning.ImageGroupFixtures.RESOURCES_WEBP
@@ -126,16 +130,49 @@ class CompressorTest {
     )
   }
 
+  @Test
+  fun `compress respects image patterns`() {
+    verifyCompress(
+      imageGroup = LOSSY_IMAGE_GROUP,
+      imagePattern = RELATIVE_PNG,
+      imageSettings = LOSSY_COMPRESS,
+      expected = LOSSY_COMPRESS,
+    )
+
+    verifyCompress(
+      imageGroup = LOSSY_IMAGE_GROUP,
+      imagePattern = "other.png",
+      imageSettings = LOSSY_COMPRESS,
+      expected = null,
+    )
+
+    verifyCompress(
+      imageGroup = LOSSY_IMAGE_GROUP,
+      imagePattern = RELATIVE_WEBP,
+      imageSettings = LOSSY_COMPRESS,
+      expected = LOSSY_COMPRESS,
+    )
+
+    verifyCompress(
+      imageGroup = LOSSY_IMAGE_GROUP,
+      imagePattern = "other.webp",
+      imageSettings = LOSSY_COMPRESS,
+      expected = null,
+    )
+  }
+
   private fun verifyCompress(
     imageGroup: ImageGroup,
+    imagePattern: String = "**",
     imageSettings: ImageSettings?,
-    expected: ImageSettings,
+    expected: ImageSettings?,
   ) {
     val compressor = FakeCompressor<ImageSettings>()
     val scanner = FakeScanner().apply { scanResponses.add(listOf(imageGroup)) }
 
     compressor.compress(
       scanner = scanner,
+      imagePatterns = listOf(imagePattern),
       imageRules =
         if (imageSettings != null) {
           listOf(ImageRule(pattern = "**", imageSettings = imageSettings))
@@ -146,6 +183,10 @@ class CompressorTest {
       microfilmDirectory = MICROFILM_DIRECTORY,
     )
 
-    assertThat(compressor.compressRequests).containsExactly(imageGroup to expected)
+    if (expected == null) {
+      assertThat(compressor.compressRequests).isEmpty()
+    } else {
+      assertThat(compressor.compressRequests).containsExactly(imageGroup to expected)
+    }
   }
 }

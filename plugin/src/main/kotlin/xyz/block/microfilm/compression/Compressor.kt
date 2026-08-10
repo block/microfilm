@@ -23,6 +23,8 @@ import xyz.block.microfilm.ImageSettings.Exclude
 import xyz.block.microfilm.ImageSettings.Unspecified
 import xyz.block.microfilm.Manifest
 import xyz.block.microfilm.compression.Compressor.Result
+import xyz.block.microfilm.compression.Compressor.Result.Success
+import xyz.block.microfilm.matchesGlobs
 import xyz.block.microfilm.resolve
 import xyz.block.microfilm.scanning.ImageGroup
 import xyz.block.microfilm.scanning.Scanner
@@ -52,6 +54,7 @@ internal interface Compressor<T : ImageSettings> {
 /** Scans for images, pairs them with rules from the Gradle configuration, and compresses them. */
 internal fun Compressor<ImageSettings>.compress(
   scanner: Scanner,
+  imagePatterns: List<String>,
   imageRules: List<ImageRule>,
   resourcesDirectory: Path,
   microfilmDirectory: Path,
@@ -71,6 +74,10 @@ internal fun Compressor<ImageSettings>.compress(
 
         else -> null
       } ?: Unspecified
-    compress(imageGroup = imageGroup, imageSettings = imageSettings)
+    if (listOfNotNull(pngPath, webpPath).matchesGlobs(patterns = imagePatterns)) {
+      compress(imageGroup = imageGroup, imageSettings = imageSettings)
+    } else {
+      Success(microfilmManifestEntry = imageGroup.microfilmManifestEntry)
+    }
   }
 }
