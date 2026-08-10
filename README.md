@@ -117,6 +117,6 @@ The verification task ensures that the images and the compression settings in th
 
 ## Modules
 
-* [cwebp](cwebp): The cwebp executable, packaged into platform-specific dependencies (currently Mac and Linux).
+* [cwebp](cwebp): The cwebp executable, packaged into platform-specific dependencies (currently Mac, Linux, and Windows).
 * [plugin](plugin): The Gradle plugin, with logic to compress and verify resource images.
 * [sample](sample): A sample Android project that demonstrates usage of the plugin.

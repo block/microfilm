@@ -22,6 +22,7 @@ import xyz.block.microfilm.Manifest.Entry
 import xyz.block.microfilm.compression.Compressor.Result
 import xyz.block.microfilm.compression.Compressor.Result.Success
 import xyz.block.microfilm.cwebp.Cwebp
+import xyz.block.microfilm.invariantSeparatorsPath
 import xyz.block.microfilm.replaceExtension
 import xyz.block.microfilm.scanning.ImageGroup
 import xyz.block.microfilm.sha256
@@ -83,9 +84,10 @@ internal class CompressCompressor(
     return Success(
       microfilmManifestEntry =
         Entry(
-          sourcePath = microfilmPng.relativeTo(other = microfilmDirectory).toString(),
+          sourcePath = microfilmPng.relativeTo(other = microfilmDirectory).invariantSeparatorsPath,
           sourceSha256 = fileSystem.sha256(file = microfilmPng),
-          compressedPath = resourcesWebp.relativeTo(other = resourcesDirectory).toString(),
+          compressedPath =
+            resourcesWebp.relativeTo(other = resourcesDirectory).invariantSeparatorsPath,
           compressedSha256 = fileSystem.sha256(file = resourcesWebp),
           compressor = imageSettings.toCompressor(cwebpVersion = cwebpVersion),
         )

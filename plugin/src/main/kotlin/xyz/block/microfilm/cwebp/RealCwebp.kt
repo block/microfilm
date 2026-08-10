@@ -16,7 +16,6 @@
 package xyz.block.microfilm.cwebp
 
 import java.io.ByteArrayOutputStream
-import kotlin.io.resolve
 import okio.Path
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.process.ExecOperations
@@ -27,7 +26,13 @@ internal class RealCwebp(
   private val execOperations: ExecOperations,
   private val directory: ConfigurableFileCollection,
 ) : Cwebp {
-  private val executable by lazy { directory.singleFile.resolve("cwebp") }
+  // The binary is named `cwebp` on Mac and Linux and `cwebp.exe` on Windows
+  private val executable by lazy {
+    directory.singleFile.listFiles().orEmpty().single { file ->
+      file.nameWithoutExtension == "cwebp"
+    }
+  }
+
   private val _version by lazy {
     val output = ByteArrayOutputStream()
     execOperations.exec { action ->

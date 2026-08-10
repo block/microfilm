@@ -34,6 +34,7 @@ import org.gradle.nativeplatform.OperatingSystemFamily
 import org.gradle.nativeplatform.OperatingSystemFamily.LINUX
 import org.gradle.nativeplatform.OperatingSystemFamily.MACOS
 import org.gradle.nativeplatform.OperatingSystemFamily.OPERATING_SYSTEM_ATTRIBUTE
+import org.gradle.nativeplatform.OperatingSystemFamily.WINDOWS
 import xyz.block.microfilm.compression.CompressTask
 import xyz.block.microfilm.cwebp.ExtractCwebpBinary
 import xyz.block.microfilm.verification.VerifyTask
@@ -199,6 +200,7 @@ private fun currentOperatingSystemFamily(): String {
   return when {
     operatingSystem.contains("mac") -> MACOS
     operatingSystem.contains("linux") -> LINUX
+    operatingSystem.contains("windows") -> WINDOWS
     else -> error("Unsupported operating system: $operatingSystem")
   }
 }
