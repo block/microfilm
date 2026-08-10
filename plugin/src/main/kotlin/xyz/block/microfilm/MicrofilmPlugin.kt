@@ -70,7 +70,7 @@ public class MicrofilmPlugin : Plugin<Project> {
     dependencies.add(
       cwebpConfiguration.name,
       if (providers.gradleProperty("xyz.block.microfilm.internal").getOrElse("false").toBoolean()) {
-        project(":cwebp")
+        dependencyFactory.createProjectDependency(":cwebp")
       } else {
         "xyz.block.microfilm:microfilm-cwebp:${BuildConfig.microfilmVersion}"
       },
