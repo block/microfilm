@@ -27,6 +27,18 @@ import xyz.block.microfilm.scanning.ImageGroupFixtures.RESOURCES_WEBP
 
 class PathsTest {
   @Test
+  fun `invariantSeparatorsPath retains separators in unix path`() {
+    assertThat("drawable-hdpi/image.png".toPath().invariantSeparatorsPath)
+      .isEqualTo("drawable-hdpi/image.png")
+  }
+
+  @Test
+  fun `invariantSeparatorsPath replaces separators in windows path`() {
+    assertThat("drawable-hdpi\\image.png".toPath().invariantSeparatorsPath)
+      .isEqualTo("drawable-hdpi/image.png")
+  }
+
+  @Test
   fun `isInDrawableDirectory is true for file in unqualified drawable directory`() {
     assertThat("src/main/res/drawable/image.png".toPath().isInDrawableDirectory).isTrue()
   }

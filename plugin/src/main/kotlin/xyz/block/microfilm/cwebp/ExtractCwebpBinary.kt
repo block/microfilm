@@ -35,11 +35,13 @@ internal abstract class ExtractCwebpBinary : TransformAction<None> {
 
   override fun transform(outputs: TransformOutputs) {
     val inputJarFile = inputJar.get().asFile
-    val outputExecutableFile = outputs.dir(inputJarFile.nameWithoutExtension).resolve("cwebp")
     ZipInputStream(inputJarFile.inputStream().buffered()).use { zip ->
       while (true) {
         val entry = zip.nextEntry ?: break
-        if (!entry.isDirectory && entry.name.substringAfterLast('/') == "cwebp") {
+        val entryName = entry.name.substringAfterLast('/')
+        if (!entry.isDirectory && (entryName == "cwebp" || entryName == "cwebp.exe")) {
+          val outputExecutableFile =
+            outputs.dir(inputJarFile.nameWithoutExtension).resolve(entryName)
           outputExecutableFile.outputStream().buffered().use { zip.copyTo(it) }
           outputExecutableFile.setExecutable(true)
           break

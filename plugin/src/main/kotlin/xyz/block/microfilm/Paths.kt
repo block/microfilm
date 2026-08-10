@@ -22,6 +22,10 @@ import okio.Path.Companion.toPath
 /** Matches Android drawable resource directories like `drawable` and `drawable-hdpi`. */
 private val DRAWABLE_DIRECTORY_PATTERN = Regex(pattern = "^drawable(-.*)?$")
 
+/** Returns the string form of this path with `/` separators, regardless of the platform. */
+internal val Path.invariantSeparatorsPath
+  get() = segments.joinToString(separator = "/")
+
 /** True if this is a file in a drawable directory. */
 internal val Path.isInDrawableDirectory
   get() = parent?.name?.matches(regex = DRAWABLE_DIRECTORY_PATTERN) == true

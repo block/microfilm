@@ -1,6 +1,5 @@
 import java.net.URI
 import java.security.MessageDigest
-import javax.inject.Inject
 import org.gradle.nativeplatform.MachineArchitecture
 import org.gradle.nativeplatform.MachineArchitecture.ARCHITECTURE_ATTRIBUTE
 import org.gradle.nativeplatform.MachineArchitecture.ARM64
@@ -9,7 +8,7 @@ import org.gradle.nativeplatform.OperatingSystemFamily
 import org.gradle.nativeplatform.OperatingSystemFamily.LINUX
 import org.gradle.nativeplatform.OperatingSystemFamily.MACOS
 import org.gradle.nativeplatform.OperatingSystemFamily.OPERATING_SYSTEM_ATTRIBUTE
-import org.gradle.process.ExecOperations
+import org.gradle.nativeplatform.OperatingSystemFamily.WINDOWS
 
 plugins {
   base
@@ -49,16 +48,29 @@ enum class CwebpPlatform(
     archivePlatform = "linux-x86-64",
     sha256 = "1c5ffab71efecefa0e3c23516c3a3a1dccb45cc310ae1095c6f14ae268e38067",
   ),
+  WindowsX86_64(
+    osFamily = WINDOWS,
+    architecture = X86_64,
+    archivePlatform = "windows-x64",
+    sha256 = "48886f506b21f62e4661f0f4cbfca19800897c385128e8902542d29a950c93f1",
+  ),
 }
 
 val CwebpPlatform.archiveName
-  get() = "libwebp-${libs.versions.cwebp.get()}-$archivePlatform.tar.gz"
+  get() =
+    "libwebp-${libs.versions.cwebp.get()}-$archivePlatform.${if (isWindows) "zip" else "tar.gz"}"
+
+val CwebpPlatform.binaryName
+  get() = if (isWindows) "cwebp.exe" else "cwebp"
 
 val CwebpPlatform.binaryPath
-  get() = "libwebp-${libs.versions.cwebp.get()}-$archivePlatform/bin/cwebp"
+  get() = "libwebp-${libs.versions.cwebp.get()}-$archivePlatform/bin/$binaryName"
 
 val CwebpPlatform.downloadUrl
   get() = "https://storage.googleapis.com/downloads.webmproject.org/releases/webp/$archiveName"
+
+val CwebpPlatform.isWindows
+  get() = osFamily == WINDOWS
 
 fun File.sha256Hex(): String {
   val digest = MessageDigest.getInstance("SHA-256")
@@ -107,11 +119,6 @@ fun TaskContainer.registerDownloadTask(platform: CwebpPlatform): TaskProvider<Ta
     }
   }
 
-// ExecOperations must be injected via Gradle's service injection in Gradle 9+
-abstract class Exec @Inject constructor(val ops: ExecOperations)
-
-val exec = objects.newInstance<Exec>()
-
 fun TaskContainer.registerExtractTask(
   platform: CwebpPlatform,
   download: TaskProvider<Task>,
@@ -124,25 +131,17 @@ fun TaskContainer.registerExtractTask(
     inputs.file(archive)
 
     // Register the binary file as an output
-    val binary = layout.buildDirectory.file("binaries/$platform/cwebp")
+    val binary = layout.buildDirectory.file("binaries/$platform/${platform.binaryName}")
     outputs.file(binary)
 
     doLast {
       // Extract the binary from the archive
-      val archiveFile = archive.get()
-      val binaryFile = binary.get().asFile.apply { parentFile.mkdirs() }
-      exec.ops.exec {
-        commandLine(
-          "tar",
-          "xzf",
-          archiveFile.absolutePath,
-          "-C",
-          binaryFile.parentFile.absolutePath,
-          "--strip-components",
-          platform.binaryPath.count { it == '/' }.toString(),
-          platform.binaryPath,
-        )
-      }
+      val binaryFile = binary.get().asFile
+      val archiveTree = if (platform.isWindows) zipTree(archive) else tarTree(archive)
+      archiveTree
+        .matching { include(platform.binaryPath) }
+        .singleFile
+        .copyTo(binaryFile, overwrite = true)
 
       // Set the binary as executable
       binaryFile.setExecutable(true)
