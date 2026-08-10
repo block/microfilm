@@ -37,6 +37,7 @@ import org.gradle.nativeplatform.OperatingSystemFamily.OPERATING_SYSTEM_ATTRIBUT
 import org.gradle.nativeplatform.OperatingSystemFamily.WINDOWS
 import xyz.block.microfilm.compression.CompressTask
 import xyz.block.microfilm.cwebp.ExtractCwebpBinary
+import xyz.block.microfilm.decompression.DecompressTask
 import xyz.block.microfilm.verification.VerifyTask
 
 public class MicrofilmPlugin : Plugin<Project> {
@@ -96,6 +97,11 @@ public class MicrofilmPlugin : Plugin<Project> {
         task.description = "Compresses source images and updates the manifest for all source sets"
         task.group = "microfilm"
       }
+    val decompress =
+      tasks.register("decompressMicrofilm") { task ->
+        task.description = "Decompresses source images and removes the manifest for all source sets"
+        task.group = "microfilm"
+      }
     val verify =
       tasks.register("verifyMicrofilm") { task ->
         task.description = "Verifies that the manifest is up to date for all source sets"
@@ -108,6 +114,7 @@ public class MicrofilmPlugin : Plugin<Project> {
         extension = extension,
         cwebpDirectory = cwebpDirectory,
         compress = compress,
+        decompress = decompress,
         verify = verify,
       )
     }
@@ -116,6 +123,7 @@ public class MicrofilmPlugin : Plugin<Project> {
         extension = extension,
         cwebpDirectory = cwebpDirectory,
         compress = compress,
+        decompress = decompress,
         verify = verify,
       )
     }
@@ -133,6 +141,7 @@ public class MicrofilmPlugin : Plugin<Project> {
     extension: MicrofilmExtension,
     cwebpDirectory: FileCollection,
     compress: TaskProvider<*>,
+    decompress: TaskProvider<*>,
     verify: TaskProvider<*>,
   ) {
     extensions.getByType(CommonExtension::class.java).sourceSets.configureEach { sourceSet ->
@@ -159,6 +168,15 @@ public class MicrofilmPlugin : Plugin<Project> {
           task.outputs.upToDateWhen { false }
           task.onlyIf { hasMicrofilmContent() }
         }
+      val decompressSourceSet =
+        tasks.register("decompressMicrofilm$nameCapitalized", DecompressTask::class.java) { task ->
+          task.description = "Decompresses source images for the '$name' source set"
+          task.group = "microfilm"
+          task.microfilmDirectory.set(microfilmDirectory)
+          task.resourcesDirectory.set(resourcesDirectory)
+          task.outputs.upToDateWhen { false }
+          task.onlyIf { hasMicrofilmContent() }
+        }
       val verifySourceSet =
         tasks.register("verifyMicrofilm$nameCapitalized", VerifyTask::class.java) { task ->
           task.description = "Verifies that the manifest is up to date for the '$name' source set"
@@ -172,6 +190,7 @@ public class MicrofilmPlugin : Plugin<Project> {
 
       // Link the subtasks to the parent tasks
       compress.configure { it.dependsOn(compressSourceSet) }
+      decompress.configure { it.dependsOn(decompressSourceSet) }
       verify.configure { it.dependsOn(verifySourceSet) }
     }
   }
