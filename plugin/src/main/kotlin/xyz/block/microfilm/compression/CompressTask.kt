@@ -16,8 +16,6 @@
 package xyz.block.microfilm.compression
 
 import javax.inject.Inject
-import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.json.Json
 import okio.FileSystem
 import okio.Path.Companion.toOkioPath
 import org.gradle.api.DefaultTask
@@ -39,6 +37,7 @@ import xyz.block.microfilm.compression.Compressor.Result.Failure
 import xyz.block.microfilm.compression.Compressor.Result.Success
 import xyz.block.microfilm.cwebp.RealCwebp
 import xyz.block.microfilm.scanning.RealScanner
+import xyz.block.microfilm.writeManifest
 
 @DisableCachingByDefault(because = "This task modifies the source tree in place")
 internal abstract class CompressTask
@@ -123,14 +122,7 @@ constructor(private val execOperations: ExecOperations) : DefaultTask() {
       )
 
     // Write the manifest to disk
-    if (manifest.entries.isEmpty()) {
-      fileSystem.delete(path = microfilmManifestPath)
-    } else {
-      fileSystem.createDirectories(dir = microfilmDirectoryPath)
-      fileSystem.write(file = microfilmManifestPath) {
-        writeUtf8(JSON.encodeToString(serializer = Manifest.serializer(), value = manifest) + "\n")
-      }
-    }
+    fileSystem.writeManifest(path = microfilmManifestPath, manifest = manifest)
 
     // Fail if any images could not be compressed
     val failures = results.filterIsInstance<Failure>()
@@ -141,16 +133,6 @@ constructor(private val execOperations: ExecOperations) : DefaultTask() {
           appendLine(failures.joinToString(separator = "\n\n") { failure -> failure.description })
         }
       )
-    }
-  }
-
-  companion object {
-    @OptIn(ExperimentalSerializationApi::class)
-    private val JSON = Json {
-      encodeDefaults = true
-      explicitNulls = false
-      prettyPrint = true
-      prettyPrintIndent = "  "
     }
   }
 }

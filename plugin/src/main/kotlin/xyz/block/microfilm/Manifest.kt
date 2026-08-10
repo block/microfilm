@@ -15,7 +15,11 @@
  */
 package xyz.block.microfilm
 
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
+import okio.FileSystem
+import okio.Path
 import xyz.block.microfilm.Manifest.Compressor
 
 @Serializable
@@ -38,6 +42,27 @@ internal data class Manifest(val entries: List<Entry> = emptyList()) {
     val compressionMethod: Int?,
     val metadata: String?,
   )
+
+  internal fun toJson(): String =
+    JSON_SERIALIZER.encodeToString(serializer = serializer(), value = this) + "\n"
+
+  companion object {
+    internal fun fromJson(json: String): Manifest =
+      JSON_DESERIALIZER.decodeFromString(string = json)
+
+    @OptIn(ExperimentalSerializationApi::class)
+    private val JSON_SERIALIZER = Json {
+      encodeDefaults = true
+      explicitNulls = false
+      prettyPrint = true
+      prettyPrintIndent = "  "
+    }
+
+    private val JSON_DESERIALIZER = Json {
+      explicitNulls = false
+      ignoreUnknownKeys = true
+    }
+  }
 }
 
 internal fun ImageSettings.Compress.toCompressor(cwebpVersion: String) =
@@ -49,3 +74,21 @@ internal fun ImageSettings.Compress.toCompressor(cwebpVersion: String) =
     compressionMethod = compressionMethod,
     metadata = metadata?.toString(),
   )
+
+/** Reads a manifest from disk, or returns an empty manifest if there isn't an existing file. */
+internal fun FileSystem.readManifest(path: Path): Manifest =
+  if (exists(path = path)) {
+    read(file = path) { readUtf8() }.let { string -> Manifest.fromJson(json = string) }
+  } else {
+    Manifest()
+  }
+
+/** Writes the manifest to disk, or deletes the existing file if the manifest is empty. */
+internal fun FileSystem.writeManifest(path: Path, manifest: Manifest) {
+  if (manifest.entries.isEmpty()) {
+    delete(path = path)
+  } else {
+    path.parent?.let { parent -> createDirectories(dir = parent) }
+    write(file = path) { writeUtf8(manifest.toJson()) }
+  }
+}
