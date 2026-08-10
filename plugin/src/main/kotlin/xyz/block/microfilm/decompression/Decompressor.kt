@@ -15,7 +15,12 @@
  */
 package xyz.block.microfilm.decompression
 
+import okio.Path
+import okio.Path.Companion.toPath
+import xyz.block.microfilm.Manifest
+import xyz.block.microfilm.matchesGlobs
 import xyz.block.microfilm.scanning.ImageGroup
+import xyz.block.microfilm.scanning.Scanner
 
 /**
  * A decompressor that removes compressed images and restores their original uncompressed
@@ -24,4 +29,26 @@ import xyz.block.microfilm.scanning.ImageGroup
 internal interface Decompressor {
   /** Removes the given compressed image and restores its original uncompressed counterpart. */
   fun decompress(imageGroup: ImageGroup)
+}
+
+/** Scans for images and decompresses them. */
+internal fun Decompressor.decompress(
+  scanner: Scanner,
+  imagePatterns: List<String>,
+  resourcesDirectory: Path,
+  microfilmDirectory: Path,
+): List<Manifest.Entry> {
+  return scanner.scan().mapNotNull { imageGroup ->
+    val pngPath =
+      imageGroup.microfilmManifestEntry?.sourcePath?.toPath()
+        ?: imageGroup.microfilmPng?.relativeTo(other = microfilmDirectory)
+        ?: imageGroup.resourcesPng?.relativeTo(other = resourcesDirectory)
+    val webpPath = imageGroup.resourcesWebp?.relativeTo(other = resourcesDirectory)
+    if (listOfNotNull(pngPath, webpPath).matchesGlobs(patterns = imagePatterns)) {
+      decompress(imageGroup = imageGroup)
+      null
+    } else {
+      imageGroup.microfilmManifestEntry
+    }
+  }
 }

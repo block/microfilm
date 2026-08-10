@@ -19,13 +19,25 @@ import okio.FileSystem
 import okio.Path.Companion.toOkioPath
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.provider.ListProperty
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.TaskAction
+import org.gradle.api.tasks.options.Option
 import org.gradle.work.DisableCachingByDefault
+import xyz.block.microfilm.Manifest
 import xyz.block.microfilm.scanning.RealScanner
+import xyz.block.microfilm.writeManifest
 
 @DisableCachingByDefault(because = "This task modifies the source tree in place")
 internal abstract class DecompressTask : DefaultTask() {
+  @get:Internal
+  @get:Option(
+    option = "images",
+    description =
+      "Decompress the images matching these glob patterns, relative to the res directory.",
+  )
+  abstract val imagePatterns: ListProperty<String>
+
   @get:Internal abstract val microfilmDirectory: DirectoryProperty
 
   @get:Internal abstract val resourcesDirectory: DirectoryProperty
@@ -54,11 +66,18 @@ internal abstract class DecompressTask : DefaultTask() {
       )
 
     // Decompress the images
-    scanner.scan().forEach { imageGroup ->
-      decompressor.decompress(imageGroup = imageGroup)
-    }
+    val manifestEntries =
+      decompressor.decompress(
+        scanner = scanner,
+        imagePatterns = imagePatterns.get().ifEmpty { listOf("**") },
+        resourcesDirectory = resourcesDirectoryPath,
+        microfilmDirectory = microfilmDirectoryPath,
+      )
 
-    // Delete the manifest
-    fileSystem.delete(path = microfilmManifestPath)
+    // Create the manifest from remaining images
+    val manifest = Manifest(entries = manifestEntries.sortedBy { entry -> entry.sourcePath })
+
+    // Write the manifest to disk
+    fileSystem.writeManifest(path = microfilmManifestPath, manifest = manifest)
   }
 }
