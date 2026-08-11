@@ -242,6 +242,7 @@ class MicrofilmPluginFunctionalTest {
   @Test
   fun `compress task is compatible with configuration cache`() {
     val project = androidLibProject()
+    PNG_FIXTURE.copyToDirectory(directory = project.libResourcesDrawableDirectory)
 
     // First build stores the configuration cache
     val result1 = project.build(":lib:compressMicrofilm", "--configuration-cache")
@@ -249,6 +250,101 @@ class MicrofilmPluginFunctionalTest {
 
     // Second build reuses the configuration cache
     val result2 = project.build(":lib:compressMicrofilm", "--configuration-cache")
+    assertThat(result2.output).contains("Configuration cache entry reused")
+  }
+
+  @Test
+  fun `decompress task is skipped when source set is empty`() {
+    val project = androidLibProject()
+    val result = project.build(":lib:decompressMicrofilmMain")
+
+    assertThat(result).task(":lib:decompressMicrofilmMain").skipped()
+  }
+
+  @Test
+  fun `decompress task succeeds when source set has orphaned manifest in microfilm directory`() {
+    val project = androidLibProject()
+    MANIFEST_FIXTURE.copyToDirectory(directory = project.libMicrofilmDirectory)
+
+    val result = project.build(":lib:decompressMicrofilmMain")
+
+    assertThat(result).task(":lib:decompressMicrofilmMain").succeeded()
+    assertThat(project.libResourcesDrawableDirectory.containsPng()).isFalse()
+    assertThat(project.libResourcesDrawableDirectory.containsWebp()).isFalse()
+    assertThat(project.libMicrofilmDirectory.containsManifest()).isFalse()
+    assertThat(project.libMicrofilmDrawableDirectory.containsPng()).isFalse()
+  }
+
+  @Test
+  fun `decompress task succeeds when source set has uncompressed png image in resources directory`() {
+    val project = androidLibProject()
+    PNG_FIXTURE.copyToDirectory(directory = project.libResourcesDrawableDirectory)
+
+    val result = project.build(":lib:decompressMicrofilmMain")
+
+    assertThat(result).task(":lib:decompressMicrofilmMain").succeeded()
+    assertThat(project.libResourcesDrawableDirectory.containsPng()).isTrue()
+    assertThat(project.libResourcesDrawableDirectory.containsWebp()).isFalse()
+    assertThat(project.libMicrofilmDirectory.containsManifest()).isFalse()
+    assertThat(project.libMicrofilmDrawableDirectory.containsPng()).isFalse()
+  }
+
+  @Test
+  fun `decompress task succeeds when source set has uncompressed png image in microfilm directory`() {
+    val project = androidLibProject()
+    PNG_FIXTURE.copyToDirectory(directory = project.libMicrofilmDrawableDirectory)
+
+    val result = project.build(":lib:decompressMicrofilmMain")
+
+    assertThat(result).task(":lib:decompressMicrofilmMain").succeeded()
+    assertThat(project.libResourcesDrawableDirectory.containsPng()).isTrue()
+    assertThat(project.libResourcesDrawableDirectory.containsWebp()).isFalse()
+    assertThat(project.libMicrofilmDirectory.containsManifest()).isFalse()
+    assertThat(project.libMicrofilmDrawableDirectory.containsPng()).isFalse()
+  }
+
+  @Test
+  fun `decompress task succeeds when source set has compressed webp image in resources directory`() {
+    val project = androidLibProject()
+    PNG_FIXTURE.copyToDirectory(directory = project.libResourcesDrawableDirectory)
+
+    project.build(":lib:compressMicrofilmMain")
+    val result = project.build(":lib:decompressMicrofilmMain")
+
+    assertThat(result).task(":lib:decompressMicrofilmMain").succeeded()
+    assertThat(project.libResourcesDrawableDirectory.containsPng()).isTrue()
+    assertThat(project.libResourcesDrawableDirectory.containsWebp()).isFalse()
+    assertThat(project.libMicrofilmDirectory.containsManifest()).isFalse()
+    assertThat(project.libMicrofilmDrawableDirectory.containsPng()).isFalse()
+  }
+
+  @Test
+  fun `decompress task succeeds when source set has independent webp image in resources directory`() {
+    val project = androidLibProject()
+    WEBP_FIXTURE.copyToDirectory(directory = project.libResourcesDrawableDirectory)
+
+    val result = project.build(":lib:decompressMicrofilmMain")
+
+    assertThat(result).task(":lib:decompressMicrofilmMain").succeeded()
+    assertThat(project.libResourcesDrawableDirectory.containsPng()).isFalse()
+    assertThat(project.libResourcesDrawableDirectory.containsWebp()).isTrue()
+    assertThat(project.libMicrofilmDirectory.containsManifest()).isFalse()
+    assertThat(project.libMicrofilmDrawableDirectory.containsPng()).isFalse()
+  }
+
+  @Test
+  fun `decompress task is compatible with configuration cache`() {
+    val project = androidLibProject()
+    MANIFEST_FIXTURE.copyToDirectory(directory = project.libMicrofilmDirectory)
+    PNG_FIXTURE.copyToDirectory(directory = project.libMicrofilmDrawableDirectory)
+    WEBP_FIXTURE.copyToDirectory(directory = project.libResourcesDrawableDirectory)
+
+    // First build stores the configuration cache
+    val result1 = project.build(":lib:decompressMicrofilm", "--configuration-cache")
+    assertThat(result1.output).contains("Configuration cache entry stored")
+
+    // Second build reuses the configuration cache
+    val result2 = project.build(":lib:decompressMicrofilm", "--configuration-cache")
     assertThat(result2.output).contains("Configuration cache entry reused")
   }
 
@@ -377,6 +473,9 @@ class MicrofilmPluginFunctionalTest {
   @Test
   fun `verify task is compatible with configuration cache`() {
     val project = androidLibProject()
+    MANIFEST_FIXTURE.copyToDirectory(directory = project.libMicrofilmDirectory)
+    PNG_FIXTURE.copyToDirectory(directory = project.libMicrofilmDrawableDirectory)
+    WEBP_FIXTURE.copyToDirectory(directory = project.libResourcesDrawableDirectory)
 
     // First build stores the configuration cache
     val result1 = project.build(":lib:verifyMicrofilm", "--configuration-cache")
