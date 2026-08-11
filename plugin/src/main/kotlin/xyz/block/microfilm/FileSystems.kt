@@ -20,8 +20,8 @@ import okio.Path
 import okio.buffer
 
 /**
- * Returns the results of [listRecursively] if the given directory exists, or an empty sequence if
- * it does not.
+ * Returns the results of [FileSystem.listRecursively] if the given directory exists, or an empty
+ * sequence if it does not.
  */
 internal fun FileSystem.listRecursivelyOrEmpty(dir: Path): Sequence<Path> =
   if (metadataOrNull(path = dir)?.isDirectory == true) {
