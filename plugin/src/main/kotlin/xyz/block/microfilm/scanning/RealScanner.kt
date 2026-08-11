@@ -15,14 +15,13 @@
  */
 package xyz.block.microfilm.scanning
 
-import kotlinx.serialization.json.Json
 import okio.FileSystem
 import okio.Path
 import okio.Path.Companion.toPath
-import xyz.block.microfilm.Manifest
 import xyz.block.microfilm.isPngDrawable
 import xyz.block.microfilm.isWebpDrawable
 import xyz.block.microfilm.listRecursivelyOrEmpty
+import xyz.block.microfilm.readManifest
 
 /** A [Scanner] backed by an Okio [FileSystem]. */
 internal class RealScanner(
@@ -54,14 +53,8 @@ internal class RealScanner(
     // Read the manifest entries
     val microfilmManifestPath = microfilmDirectory.resolve("manifest.json")
     val microfilmManifestEntries =
-      if (fileSystem.exists(path = microfilmManifestPath)) {
-        fileSystem
-          .read(file = microfilmManifestPath) { readUtf8() }
-          .let<String, Manifest> { string -> JSON.decodeFromString(string = string) }
-          .entries
-          .associateBy { entry -> entry.sourcePath.toPath().key }
-      } else {
-        emptyMap()
+      fileSystem.readManifest(path = microfilmManifestPath).entries.associateBy { entry ->
+        entry.sourcePath.toPath().key
       }
 
     // Group the images for each unique key
@@ -83,11 +76,6 @@ internal class RealScanner(
         )
       }
   }
-}
-
-private val JSON = Json {
-  explicitNulls = false
-  ignoreUnknownKeys = true
 }
 
 private val Path.key
