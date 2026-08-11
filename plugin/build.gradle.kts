@@ -1,3 +1,7 @@
+import org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED
+import org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED
+import org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED
+
 plugins {
   `java-gradle-plugin`
   alias(libs.plugins.buildconfig)
@@ -29,6 +33,8 @@ gradleTestKitSupport {
 tasks.withType<Test>().configureEach {
   useJUnitPlatform()
   systemProperty("agpVersion", libs.versions.agp.get())
+
+  testLogging { events = setOf(PASSED, FAILED, SKIPPED) }
 
   dependsOn(":cwebp:publishAllPublicationsToFunctionalTestRepository")
 }
