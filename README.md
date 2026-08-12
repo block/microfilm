@@ -14,7 +14,7 @@ In the `build.gradle.kts` file of an Android application or library module, add:
 
 ```kotlin
 plugins {
-  id("xyz.block.microfilm") version "0.2.1"
+  id("xyz.block.microfilm") version "0.3.0"
 }
 ```
 
@@ -92,6 +92,13 @@ The resulting manifest file will look something like this:
 
 Check this manifest into source control, along with the uncompressed PNG images and the compressed WebP images.
 
+By default, every image in the module is compressed. To compress a single image or a subset of images, pass one or more `--images` options with glob patterns relative to the `res` directory:
+
+```shell
+./gradlew my-module:compressMicrofilm --images="drawable-hdpi/my_image.png"
+./gradlew my-module:compressMicrofilmDebug --images="**/my_image.webp" --images="drawable-hdpi/**"
+```
+
 ## Verification
 
 Run the generic verification task with:
@@ -114,6 +121,37 @@ Verification is wired into the standard `check` task, so you can also simply run
 ```
 
 The verification task ensures that the images and the compression settings in the manifest file match what's actually in the module. If a PNG image has been added/changed/removed, or if the compression settings in the Gradle module have changed, then the task will report a failure.
+
+By default, every image in the module is verified. To verify a single image or a subset of images, pass one or more `--images` options with glob patterns relative to the `res` directory:
+
+```shell
+./gradlew my-module:verifyMicrofilm --images="drawable-hdpi/my_image.png"
+./gradlew my-module:verifyMicrofilmDebug --images="**/my_image.webp" --images="drawable-hdpi/**"
+```
+
+## Decompression
+
+Before modifying or removing an image, it can sometimes be useful to decompress an image by removing the Microfilm metadata and replacing the compressed WebP with the original PNG. Decompression is non-destructive, it simply undoes the work of the compression task. In an up-to-date module, running decompress followed by compress is a no-op.
+
+Run the generic decompression task with:
+
+```shell
+./gradlew my-module:decompressMicrofilm
+```
+
+Or the decompression task for individual source sets with:
+
+```shell
+./gradlew my-module:decompressMicrofilmDebug
+./gradlew my-module:decompressMicrofilmRelease
+```
+
+By default, every image in the module is decompressed. To decompress a single image or a subset of images, pass one or more `--images` options with glob patterns relative to the `res` directory:
+
+```shell
+./gradlew my-module:decompressMicrofilm --images="drawable-hdpi/my_image.png"
+./gradlew my-module:decompressMicrofilmDebug --images="**/my_image.webp" --images="drawable-hdpi/**"
+```
 
 ## Modules
 
