@@ -3,6 +3,15 @@
 ## [Unreleased]
 [Unreleased]: https://github.com/block/microfilm/commits/main
 
+## [0.4.0] - 2023-08-12
+[0.4.0]: https://github.com/cashapp/paraphrase/releases/tag/0.4.0
+
+New:
+
+- Add a decompress task to restore the pre-Microfilm state of a module
+- Allow `--images` flags passed to all tasks to target single images or subsets of images
+- Support for Windows
+
 ## [0.3.0] - 2023-07-21
 [0.3.0]: https://github.com/cashapp/paraphrase/releases/tag/0.3.0
 

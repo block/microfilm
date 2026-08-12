@@ -14,7 +14,7 @@ In the `build.gradle.kts` file of an Android application or library module, add:
 
 ```kotlin
 plugins {
-  id("xyz.block.microfilm") version "0.3.0"
+  id("xyz.block.microfilm") version "0.4.0"
 }
 ```
 
