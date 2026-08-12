@@ -93,17 +93,17 @@ public class MicrofilmPlugin : Plugin<Project> {
 
     // Register the tasks
     val compress =
-      tasks.register("compressMicrofilm") { task ->
+      tasks.register("compressMicrofilm", ImagesLifecycleTask::class.java) { task ->
         task.description = "Compresses source images and updates the manifest for all source sets"
         task.group = "microfilm"
       }
     val decompress =
-      tasks.register("decompressMicrofilm") { task ->
+      tasks.register("decompressMicrofilm", ImagesLifecycleTask::class.java) { task ->
         task.description = "Decompresses source images and removes the manifest for all source sets"
         task.group = "microfilm"
       }
     val verify =
-      tasks.register("verifyMicrofilm") { task ->
+      tasks.register("verifyMicrofilm", ImagesLifecycleTask::class.java) { task ->
         task.description = "Verifies that the manifest is up to date for all source sets"
         task.group = "microfilm"
       }
@@ -140,9 +140,9 @@ public class MicrofilmPlugin : Plugin<Project> {
   private fun Project.configureSourceSets(
     extension: MicrofilmExtension,
     cwebpDirectory: FileCollection,
-    compress: TaskProvider<*>,
-    decompress: TaskProvider<*>,
-    verify: TaskProvider<*>,
+    compress: TaskProvider<ImagesLifecycleTask>,
+    decompress: TaskProvider<ImagesLifecycleTask>,
+    verify: TaskProvider<ImagesLifecycleTask>,
   ) {
     extensions.getByType(CommonExtension::class.java).sourceSets.configureEach { sourceSet ->
       val name = sourceSet.name
@@ -163,6 +163,7 @@ public class MicrofilmPlugin : Plugin<Project> {
           task.group = "microfilm"
           task.cwebpDirectory.from(cwebpDirectory)
           task.imageRules.set(extension.imageRules)
+          task.imagePatterns.convention(compress.flatMap { it.imagePatterns })
           task.microfilmDirectory.set(microfilmDirectory)
           task.resourcesDirectory.set(resourcesDirectory)
           task.outputs.upToDateWhen { false }
@@ -172,6 +173,7 @@ public class MicrofilmPlugin : Plugin<Project> {
         tasks.register("decompressMicrofilm$nameCapitalized", DecompressTask::class.java) { task ->
           task.description = "Decompresses source images for the '$name' source set"
           task.group = "microfilm"
+          task.imagePatterns.convention(decompress.flatMap { it.imagePatterns })
           task.microfilmDirectory.set(microfilmDirectory)
           task.resourcesDirectory.set(resourcesDirectory)
           task.outputs.upToDateWhen { false }
@@ -182,6 +184,7 @@ public class MicrofilmPlugin : Plugin<Project> {
           task.description = "Verifies that the manifest is up to date for the '$name' source set"
           task.group = "microfilm"
           task.cwebpDirectory.from(cwebpDirectory)
+          task.imagePatterns.convention(verify.flatMap { it.imagePatterns })
           task.imageRules.set(extension.imageRules)
           task.microfilmDirectory.set(microfilmDirectory)
           task.resourcesDirectory.set(resourcesDirectory)
