@@ -1,17 +1,17 @@
 [versions]
-agp = "9.3.1"
+agp = "9.4.0"
 cwebp = "1.6.0"
 kotlin = "2.4.10"
 mavenPublish = "0.37.0"
-okio = "3.18.1"
-testkit = "0.19"
+okio = "3.18.2"
+testkit = "0.20"
 
 [libraries]
 agp = { module = "com.android.tools.build:gradle", version.ref = "agp" }
 androidActivityCompose = "androidx.activity:activity-compose:1.13.0"
 assertk = "com.willowtreeapps.assertk:assertk:0.28.1"
-composeMaterial = "androidx.compose.material:material:1.11.4"
-composeUi = "androidx.compose.ui:ui:1.11.4"
+composeMaterial = "androidx.compose.material:material:1.12.0"
+composeUi = "androidx.compose.ui:ui:1.12.0"
 junit-bom = "org.junit:junit-bom:6.1.3"
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter" }
 junit-launcher = { module = "org.junit.platform:junit-platform-launcher" }
@@ -25,11 +25,11 @@ androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
 buildconfig = { id = "com.github.gmazzo.buildconfig", version = "6.0.10" }
 dokka = { id = "org.jetbrains.dokka", version = "2.2.0" }
-kotlinApiDump = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version = "0.18.1" }
+kotlinApiDump = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version = "0.18.2" }
 kotlinCompose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 mavenPublish = { id = "com.vanniktech.maven.publish", version.ref = "mavenPublish" }
 mavenPublishBase = { id = "com.vanniktech.maven.publish.base", version.ref = "mavenPublish" }
-spotless = { id = "com.diffplug.spotless", version = "8.9.0" }
+spotless = { id = "com.diffplug.spotless", version = "8.10.2" }
 testkit = { id = "com.autonomousapps.testkit", version.ref = "testkit" }
